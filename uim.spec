@@ -1,12 +1,12 @@
 Summary:	Multilingual input method library
 Summary(pl):	Biblioteka obs³uguj±ca wej¶cie w wielu jêzykach
 Name:		uim
-Version:	0.2.7
+Version:	0.2.8
 Release:	1
 License:	GPL or BSD
 Group:		Libraries
 Source0:	http://freedesktop.org/Software/UimDownload/%{name}-%{version}.tar.gz
-# Source0-md5:	67fc19f5f567f2da76c79f39fc7393f0
+# Source0-md5:	bdc727d0df3466f165e0f1933e8c07ed
 Patch0:		%{name}-dont_run_gtk_query_immodules.patch
 URL:		http://freedesktop.org/Software/uim
 BuildRequires:	autoconf
@@ -86,7 +86,6 @@ umask 022
 %doc AUTHORS ChangeLog NEWS README
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
-%attr(755,root,root) %{_libdir}/uim-helper-applet
 %attr(755,root,root) %{_libdir}/gtk*/*/immodules/*.so
 %{_libdir}/bonobo/servers/*.server
 %{_datadir}/%{name}
