@@ -15,8 +15,8 @@ BuildRequires:	automake
 BuildRequires:	gtk+2-devel >= 2.2.0
 BuildRequires:	libgnome-devel >= 2.4.0
 BuildRequires:	libtool
-Requires(post):	/sbin/ldconfig
-Requires(post):	gtk+2
+Requires(post,postun):	/sbin/ldconfig
+Requires(post,postun):	gtk+2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -81,7 +81,9 @@ umask 022
 /sbin/ldconfig
 %{_bindir}/gtk-query-immodules-2.0 > %{_sysconfdir}/gtk-2.0/gtk.immodules
 
-%postun	-p /sbin/ldconfig
+%postun
+/sbin/ldconfig
+%{_bindir}/gtk-query-immodules-2.0 > %{_sysconfdir}/gtk-2.0/gtk.immodules
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
