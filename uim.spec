@@ -2,12 +2,13 @@ Summary:	Multilingual input method library
 Summary(pl):	Biblioteka obs³uguj±ca wej¶cie w wielu jêzykach
 Name:		uim
 Version:	0.3.2
-Release:	1
+Release:	2
 License:	GPL or BSD
 Group:		Libraries
 Source0:	http://freedesktop.org/Software/UimDownload/%{name}-%{version}.tar.gz
 # Source0-md5:	fe363216c0b6ef90eeb7352721bd9fcc
 Patch0:		%{name}-dont_run_gtk_query_immodules.patch
+Patch1:		%{name}-immodules_dir.patch
 URL:		http://freedesktop.org/Software/uim
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -54,6 +55,7 @@ Statyczna biblioteka uim.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
