@@ -1,0 +1,104 @@
+Summary:	Multilingual input method library
+Summary(pl):	Biblioteka obs³uguj±ca wej¶cie w wielu jêzykach
+Name:		uim
+Version:	0.2.7
+Release:	1
+License:	GPL or BSD
+Group:		Libraries
+Source0:	http://freedesktop.org/Software/UimDownload/%{name}-%{version}.tar.gz
+# Source0-md5:	67fc19f5f567f2da76c79f39fc7393f0
+Patch0:		%{name}-dont_run_gtk_query_immodules.patch
+URL:		http://freedesktop.org/Software/uim
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	gtk+2-devel >= 2.2.0
+BuildRequires:	libgnome-devel >= 2.4.0
+BuildRequires:	libtool
+Requires(post):	/sbin/ldconfig
+Requires(post):	gtk+2
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%description
+Uim is a multilingual input method library. Uim's project goal is to
+provide secure and useful input method for all languages.
+
+%description -l pl
+Uim jest bibliotek± obs³uguj±c± wej¶cie w wielu jêzykach. Celem
+projektu jest udostêpnienie bezpiecznej i u¿ytecznej metody dla
+wszystkich jêzyków.
+
+%package devel
+Summary:	Header files for uim libraryi
+Summary(pl):	Pliki nag³ówkowe biblioteki uim
+Group:		Development/Libraries
+Requires:	%{name} = %{version}
+
+%description devel
+Header files for uim library.
+
+%description devel -l pl
+Pliki nag³ówkowe biblioteki uim.
+
+%package static
+Summary:	Static uim library
+Summary(pl):	Statyczna biblioteka uim
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}
+
+%description static
+Static uim library.
+
+%description static -l pl
+Statyczna biblioteka uim.
+
+%prep
+%setup -q
+%patch0 -p1
+
+%build
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__automake}
+%configure
+%{__make}
+
+%install
+rm -rf $RPM_BUILD_ROOT
+
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
+
+%find_lang %{name}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post
+umask 022
+/sbin/ldconfig
+%{_bindir}/gtk-query-immodules-2.0 > %{_sysconfdir}/gtk-2.0/gtk.immodules
+
+%postun	-p /sbin/ldconfig
+
+%files -f %{name}.lang
+%defattr(644,root,root,755)
+%doc AUTHORS ChangeLog NEWS README
+%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%attr(755,root,root) %{_libdir}/uim-helper-applet
+%attr(755,root,root) %{_libdir}/gtk*/*/immodules/*.so
+%{_libdir}/bonobo/servers/*.server
+%{_datadir}/%{name}
+
+%files devel
+%defattr(644,root,root,755)
+%doc doc/LIB
+%attr(755,root,root) %{_libdir}/lib*.so
+%{_libdir}/lib*.la
+%{_includedir}/%{name}
+%{_pkgconfigdir}/*.pc
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/lib*.a
