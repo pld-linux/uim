@@ -12,7 +12,7 @@ Patch1:		%{name}-immodules_dir.patch
 URL:		http://freedesktop.org/Software/uim
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	gtk+2-devel >= 2.2.0
+BuildRequires:	gtk+2-devel >= 2:2.2.0
 BuildRequires:	libgnome-devel >= 2.4.0
 BuildRequires:	libtool
 Requires(post,postun):	/sbin/ldconfig
