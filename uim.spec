@@ -5,11 +5,11 @@ Version:	0.3.2
 Release:	2
 License:	GPL or BSD
 Group:		Libraries
-Source0:	http://freedesktop.org/Software/UimDownload/%{name}-%{version}.tar.gz
+Source0:	http://uim.freedesktop.org/releases/%{name}-%{version}.tar.gz
 # Source0-md5:	fe363216c0b6ef90eeb7352721bd9fcc
 Patch0:		%{name}-dont_run_gtk_query_immodules.patch
 Patch1:		%{name}-immodules_dir.patch
-URL:		http://freedesktop.org/Software/uim
+URL:		http://uim.freedesktop.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	gtk+2-devel >= 2:2.2.0
