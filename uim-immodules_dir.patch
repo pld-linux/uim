@@ -1,0 +1,24 @@
+diff -urN aa/uim-0.3.2/configure.ac uim-0.3.2/configure.ac
+--- aa/uim-0.3.2/configure.ac	2004-03-07 13:43:06.000000000 +0100
++++ uim-0.3.2/configure.ac	2004-03-17 16:08:45.500738432 +0100
+@@ -93,6 +93,9 @@
+ AM_CONDITIONAL(XFCE4_PANEL, test x$use_xfce4_panel = xyes)
+ 
+ 
++GTK2_VERSION=`pkg-config --variable=gtk_binary_version gtk+-2.0`
++AC_SUBST(GTK2_VERSION)
++
+ XFCE4_PANEL_PLUGINSDIR=`pkg-config xfce4-panel-1.0 --variable=pluginsdir`
+ AC_SUBST(XFCE4_PANEL_PLUGINSDIR)
+ 
+diff -urN aa/uim-0.3.2/gtk/Makefile.am uim-0.3.2/gtk/Makefile.am
+--- aa/uim-0.3.2/gtk/Makefile.am	2004-03-04 11:32:21.000000000 +0100
++++ uim-0.3.2/gtk/Makefile.am	2004-03-17 16:09:41.290257136 +0100
+@@ -1,6 +1,6 @@
+ 
+ 
+-moduledir = $(libdir)/gtk-2.0/2.2.0/immodules
++moduledir = $(libdir)/gtk-2.0/$(GTK2_VERSION)/immodules
+ GTK_IMMODULES= $(DESTDIR)$(sysconfdir)/gtk-2.0/gtk.immodules
+ 
+ INCLUDES = -I$(top_srcdir)
