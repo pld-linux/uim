@@ -86,6 +86,7 @@ umask 022
 %doc AUTHORS ChangeLog NEWS README
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%attr(755,root,root) %{_libdir}/uim-helper-applet
 %attr(755,root,root) %{_libdir}/gtk*/*/immodules/*.so
 %{_libdir}/bonobo/servers/*.server
 %{_datadir}/%{name}
