@@ -1,0 +1,24 @@
+diff -urN aa/uim-0.2.7/gtk/Makefile.am uim-0.2.7/gtk/Makefile.am
+--- aa/uim-0.2.7/gtk/Makefile.am	2003-12-25 21:36:22.000000000 +0100
++++ uim-0.2.7/gtk/Makefile.am	2004-01-31 22:24:20.981835864 +0100
+@@ -18,17 +18,8 @@
+ 
+ IM_UIM_SOURCES = gtk-im-uim.c
+ 
+-install-data-hook:
+-	if test -f $(GTK_IMMODULES); then \
+-	gtk-query-immodules-2.0 > $(GTK_IMMODULES); \
+-	fi
+-uninstall-hook:
+-	if test -f $(GTK_IMMODULES); then \
+-	gtk-query-immodules-2.0 > $(GTK_IMMODULES); \
+-	fi
+-else
+-install-data-hook:
++endif
+ 
+- uninstall-hook:
++install-data-hook:
+ 
+-endif
++uninstall-hook:
