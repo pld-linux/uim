@@ -1,12 +1,12 @@
 Summary:	Multilingual input method library
 Summary(pl):	Biblioteka obs³uguj±ca wej¶cie w wielu jêzykach
 Name:		uim
-Version:	0.2.8
+Version:	0.3.2
 Release:	1
 License:	GPL or BSD
 Group:		Libraries
 Source0:	http://freedesktop.org/Software/UimDownload/%{name}-%{version}.tar.gz
-# Source0-md5:	bdc727d0df3466f165e0f1933e8c07ed
+# Source0-md5:	fe363216c0b6ef90eeb7352721bd9fcc
 Patch0:		%{name}-dont_run_gtk_query_immodules.patch
 URL:		http://freedesktop.org/Software/uim
 BuildRequires:	autoconf
@@ -31,7 +31,7 @@ wszystkich jêzyków.
 Summary:	Header files for uim libraryi
 Summary(pl):	Pliki nag³ówkowe biblioteki uim
 Group:		Development/Libraries
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Header files for uim library.
@@ -43,7 +43,7 @@ Pliki nag³ówkowe biblioteki uim.
 Summary:	Static uim library
 Summary(pl):	Statyczna biblioteka uim
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static uim library.
@@ -88,6 +88,7 @@ umask 022
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
 %attr(755,root,root) %{_libdir}/uim-helper-applet
 %attr(755,root,root) %{_libdir}/gtk*/*/immodules/*.so
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*
 %{_libdir}/bonobo/servers/*.server
 %{_datadir}/%{name}
 
