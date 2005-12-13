@@ -93,7 +93,7 @@ umask 022
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
 %attr(755,root,root) %{_libdir}/uim-helper-applet
 %attr(755,root,root) %{_libdir}/gtk*/*/immodules/*.so
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*
 %{_libdir}/bonobo/servers/*.server
 %{_datadir}/%{name}
 
