@@ -1,5 +1,5 @@
 Summary:	Multilingual input method library
-Summary(pl.UTF-8):   Biblioteka obsługująca wejście w wielu językach
+Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
 Version:	0.3.2
 Release:	2
@@ -30,7 +30,7 @@ wszystkich języków.
 
 %package devel
 Summary:	Header files for uim libraryi
-Summary(pl.UTF-8):   Pliki nagłówkowe biblioteki uim
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki uim
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
@@ -42,7 +42,7 @@ Pliki nagłówkowe biblioteki uim.
 
 %package static
 Summary:	Static uim library
-Summary(pl.UTF-8):   Statyczna biblioteka uim
+Summary(pl.UTF-8):	Statyczna biblioteka uim
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
