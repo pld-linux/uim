@@ -1,5 +1,5 @@
 Summary:	Multilingual input method library
-Summary(pl):	Biblioteka obs³uguj±ca wej¶cie w wielu jêzykach
+Summary(pl.UTF-8):   Biblioteka obsÅ‚ugujÄ…ca wejÅ›cie w wielu jÄ™zykach
 Name:		uim
 Version:	0.3.2
 Release:	2
@@ -23,33 +23,33 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Uim is a multilingual input method library. Uim's project goal is to
 provide secure and useful input method for all languages.
 
-%description -l pl
-Uim jest bibliotek± obs³uguj±c± wej¶cie w wielu jêzykach. Celem
-projektu jest udostêpnienie bezpiecznej i u¿ytecznej metody dla
-wszystkich jêzyków.
+%description -l pl.UTF-8
+Uim jest bibliotekÄ… obsÅ‚ugujÄ…cÄ… wejÅ›cie w wielu jÄ™zykach. Celem
+projektu jest udostÄ™pnienie bezpiecznej i uÅ¼ytecznej metody dla
+wszystkich jÄ™zykÃ³w.
 
 %package devel
 Summary:	Header files for uim libraryi
-Summary(pl):	Pliki nag³ówkowe biblioteki uim
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe biblioteki uim
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Header files for uim library.
 
-%description devel -l pl
-Pliki nag³ówkowe biblioteki uim.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe biblioteki uim.
 
 %package static
 Summary:	Static uim library
-Summary(pl):	Statyczna biblioteka uim
+Summary(pl.UTF-8):   Statyczna biblioteka uim
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static uim library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna biblioteka uim.
 
 %prep
