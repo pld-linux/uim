@@ -59,6 +59,7 @@ Statyczna biblioteka uim.
 
 %build
 %{__libtoolize}
+%{__gettextize}
 %{__aclocal}
 %{__autoconf}
 %{__automake}
