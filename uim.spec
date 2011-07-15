@@ -129,14 +129,24 @@ rm -rf $RPM_BUILD_ROOT
 %post
 umask 022
 /sbin/ldconfig
+%if "%{_lib}" != "lib"
+%{_bindir}/gtk-query-immodules-2.0-64 > %{_sysconfdir}/gtk64-2.0/gtk.immodules
+%{_bindir}/gtk-query-immodules-3.0-64 --update-cache
+%else
 %{_bindir}/gtk-query-immodules-2.0 > %{_sysconfdir}/gtk-2.0/gtk.immodules
-%{_bindir}/gtk-query-immodules-3.0 > %{_sysconfdir}/gtk-3.0/gtk.immodules
+%{_bindir}/gtk-query-immodules-3.0 --update-cache
+%endif
 
 %postun
 umask 022
 /sbin/ldconfig
+%if "%{_lib}" != "lib"
+%{_bindir}/gtk-query-immodules-2.0-64 > %{_sysconfdir}/gtk64-2.0/gtk.immodules
+%{_bindir}/gtk-query-immodules-3.0-64 --update-cache
+%else
 %{_bindir}/gtk-query-immodules-2.0 > %{_sysconfdir}/gtk-2.0/gtk.immodules
-%{_bindir}/gtk-query-immodules-3.0 > %{_sysconfdir}/gtk-3.0/gtk.immodules
+%{_bindir}/gtk-query-immodules-3.0 --update-cache
+%endif
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
