@@ -1,0 +1,36 @@
+--- uim-1.7.0/configure.ac~	2011-05-12 15:18:18.000000000 +0200
++++ uim-1.7.0/configure.ac	2011-07-15 22:52:35.101500283 +0200
+@@ -1046,8 +1046,8 @@
+       yes|*)
+         use_uim_fep="yes"
+ 	AC_CHECK_LIB(curses, setupterm, FEP_LIBADD="-lcurses $FEP_LIBADD",
+-	  [AC_CHECK_LIB(ncurses, setupterm, FEP_LIBADD="-lncurses $FEP_LIBADD",
+-	    AC_MSG_WARN([fep needs setupterm in libcurses or libncurses. disabled...]);use_uim_fep="no")])
++	  [AC_CHECK_LIB(ncurses, setupterm, FEP_LIBADD="-lncurses -ltinfo $FEP_LIBADD",
++	    AC_MSG_WARN([fep needs setupterm in libcurses or libncurses. disabled...]);use_uim_fep="no","-ltinfo")])
+ 	AC_CHECK_FUNCS(forkpty)
+ 	if test $ac_cv_func_forkpty = no; then
+ 	  AC_CHECK_LIB(util, forkpty, [AC_DEFINE(HAVE_FORKPTY) FEP_LIBADD="-lutil $FEP_LIBADD"])
+@@ -1058,8 +1058,8 @@
+   ],
+   [ use_uim_fep="yes"
+     AC_CHECK_LIB(curses, setupterm, FEP_LIBADD="-lcurses $FEP_LIBADD",
+-      [AC_CHECK_LIB(ncurses, setupterm, FEP_LIBADD="-lncurses $FEP_LIBADD",
+-        AC_MSG_WARN([fep needs setupterm in libcurses or libncurses. disabled...]);use_uim_fep="no")])
++      [AC_CHECK_LIB(ncurses, setupterm, FEP_LIBADD="-lncurses -ltinfo $FEP_LIBADD",
++        AC_MSG_WARN([fep needs setupterm in libcurses or libncurses. disabled...]);use_uim_fep="no","-ltinfo")])
+     AC_CHECK_FUNCS(forkpty)
+     if test $ac_cv_func_forkpty = no; then
+       AC_CHECK_LIB(util, forkpty, [AC_DEFINE(HAVE_FORKPTY) FEP_LIBADD="-lutil $FEP_LIBADD"])
+@@ -1176,9 +1176,9 @@
+     CPPFLAGS="${CPPFLAGS} -I$libedit_path/include"
+     LDFLAGS="${LDFLAGS} -L$libedit_path/lib"
+     AC_CHECK_LIB(curses, tgetent, LIBEDIT_LIBS="-lcurses",
+-        [AC_CHECK_LIB(ncurses, tgetent, LIBEDIT_LIBS="-lncurses",
++        [AC_CHECK_LIB(ncurses, tgetent, LIBEDIT_LIBS="-lncurses -ltinfo",
+             AC_MSG_WARN("libedit needs libcurses or libncurses. disabled...")
+-            use_libedit="no")])
++            use_libedit="no","-ltinfo")])
+     if test "x$use_libedit" != "xno"; then
+         AC_CHECK_LIB(edit, el_init,
+             [LIBEDIT_LIBS="-ledit $LIBEDIT_LIBS -L$libedit_path/lib"
