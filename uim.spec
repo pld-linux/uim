@@ -12,7 +12,11 @@ License:	GPL or BSD
 Group:		Libraries
 Source0:	http://uim.googlecode.com/files/%{name}-%{version}.tar.bz2
 # Source0-md5:	1633f131ea58b34fd85e15411e3cc363
+Source1:	uim-init.el
+Source2:	xinput.d-uim
 Patch0:		%{name}-link.patch
+Patch1:		%{name}-emacs-utf8.patch
+Patch2:		%{name}-enable-libgcroots.patch
 URL:		http://uim.freedesktop.org/
 BuildRequires:	anthy-devel >= 9100h-2
 BuildRequires:	autoconf
@@ -67,21 +71,11 @@ Header files for uim library.
 %description devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki uim.
 
-%package static
-Summary:	Static uim library
-Summary(pl.UTF-8):	Statyczna biblioteka uim
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-
-%description static
-Static uim library.
-
-%description static -l pl.UTF-8
-Statyczna biblioteka uim.
-
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 %{__aclocal} -I m4
@@ -205,7 +199,3 @@ umask 022
 %attr(755,root,root) %{_libdir}/lib*.so
 %{_includedir}/%{name}
 %{_pkgconfigdir}/*.pc
-
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/lib*.a
