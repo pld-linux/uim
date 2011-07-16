@@ -151,17 +151,18 @@ umask 022
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
-%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_bindir}/uim-el-agent
+%attr(755,root,root) %{_bindir}/uim-el-helper-agent
+%attr(755,root,root) %{_bindir}/uim-fep
+%attr(755,root,root) %{_bindir}/uim-fep-tick
+%attr(755,root,root) %{_bindir}/uim-help
+%attr(755,root,root) %{_bindir}/uim-input-pad-ja
+%attr(755,root,root) %{_bindir}/uim-m17nlib-relink-icons
+%attr(755,root,root) %{_bindir}/uim-module-manager
+%attr(755,root,root) %{_bindir}/uim-sh
+%attr(755,root,root) %{_bindir}/uim-xim
 %attr(755,root,root) %{_libdir}/lib*.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/lib*.so.[0-9]
-%attr(755,root,root) %{_libdir}/gtk-2.0/*/immodules/*.so
-%attr(755,root,root) %{_libdir}/gtk-3.0/*/immodules/*.so
-%attr(755,root,root) %{_libdir}/qt4/plugins/inputmethods/*.so
-%attr(755,root,root) %{_libdir}/uim-candwin-gtk
-%attr(755,root,root) %{_libdir}/uim-candwin-gtk3
-%attr(755,root,root) %{_libdir}/uim-candwin-qt4
-%attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk
-%attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk3
 %attr(755,root,root) %{_libdir}/uim-helper-server
 %attr(755,root,root) %{_libdir}/uim-toolbar-applet-gnome3
 %dir %{_libdir}/uim
@@ -193,6 +194,32 @@ umask 022
 %{_datadir}/dbus-1/services/org.gnome.panel.applet.UimAppletFactory.service
 %{_datadir}/gnome-panel/4.0/applets/UimApplet.panel-applet
 %{_mandir}/man1/*.1*
+
+%attr(755,root,root) %{_bindir}/uim-dict-gtk
+%attr(755,root,root) %{_bindir}/uim-im-switcher-gtk
+%attr(755,root,root) %{_bindir}/uim-pref-gtk
+%attr(755,root,root) %{_bindir}/uim-toolbar-gtk
+%attr(755,root,root) %{_bindir}/uim-toolbar-gtk-systray
+%attr(755,root,root) %{_libdir}/gtk-2.0/*/immodules/*.so
+%attr(755,root,root) %{_libdir}/uim-candwin-gtk
+%attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk
+
+%attr(755,root,root) %{_bindir}/uim-dict-gtk3
+%attr(755,root,root) %{_bindir}/uim-im-switcher-gtk3
+%attr(755,root,root) %{_bindir}/uim-input-pad-ja-gtk3
+%attr(755,root,root) %{_bindir}/uim-pref-gtk3
+%attr(755,root,root) %{_bindir}/uim-toolbar-gtk3
+%attr(755,root,root) %{_bindir}/uim-toolbar-gtk3-systray
+%attr(755,root,root) %{_libdir}/gtk-3.0/*/immodules/*.so
+%attr(755,root,root) %{_libdir}/uim-candwin-gtk3
+%attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk3
+
+%attr(755,root,root) %{_bindir}/uim-chardict-qt4
+%attr(755,root,root) %{_bindir}/uim-im-switcher-qt4
+%attr(755,root,root) %{_bindir}/uim-pref-qt4
+%attr(755,root,root) %{_bindir}/uim-toolbar-qt4
+%attr(755,root,root) %{_libdir}/qt4/plugins/inputmethods/*.so
+%attr(755,root,root) %{_libdir}/uim-candwin-qt4
 
 %files devel
 %defattr(644,root,root,755)
