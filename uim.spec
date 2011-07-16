@@ -27,6 +27,7 @@ BuildRequires:	gtk+3-devel
 #BuildRequires:	kde4-kdelibs-devel
 BuildRequires:	libedit-devel
 BuildRequires:	libffi-devel
+BuildRequires:	libgcroots-devel
 BuildRequires:	libgnome-devel >= 2.4.0
 BuildRequires:	libtool
 BuildRequires:	m17n-lib-devel
@@ -34,8 +35,13 @@ BuildRequires:	mana
 BuildRequires:	openssl-devel
 BuildRequires:	qt4-qmake
 BuildRequires:	sqlite3-devel
-#  --with-x \
-#  --with-xft \
+BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXau-devel
+BuildRequires:	xorg-lib-libXdmcp-devel
+BuildRequires:	xorg-lib-libXext-devel
+BuildRequires:	xorg-lib-libXft-devel
+BuildRequires:	xorg-lib-libXrender-devel
+BuildRequires:	xorg-lib-libXt-devel
 Requires(post,postun):	/sbin/ldconfig
 Requires(post,postun):	gtk+2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
