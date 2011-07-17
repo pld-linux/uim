@@ -1,0 +1,37 @@
+--- uim-1.7.0/qt/chardict/po/Makefile.in.in~	2011-05-17 06:16:20.000000000 +0200
++++ uim-1.7.0/qt/chardict/po/Makefile.in.in	2011-07-18 01:07:28.530206913 +0200
+@@ -17,7 +17,7 @@
+ # We have the following line for use by intltoolize:
+ # INTLTOOL_MAKEFILE
+ 
+-GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
++GETTEXT_PACKAGE = uim-chardict-qt
+ PACKAGE = @PACKAGE@
+ VERSION = @VERSION@
+ 
+--- uim-1.7.0/qt4/chardict/po/Makefile.in.in~	2011-05-17 06:16:20.000000000 +0200
++++ uim-1.7.0/qt4/chardict/po/Makefile.in.in	2011-07-18 01:08:14.373761366 +0200
+@@ -17,7 +17,7 @@
+ # We have the following line for use by intltoolize:
+ # INTLTOOL_MAKEFILE
+ 
+-GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
++GETTEXT_PACKAGE = uim-chardict-qt4
+ PACKAGE = @PACKAGE@
+ VERSION = @VERSION@
+ 
+--- uim-1.7.0/qt4/chardict/qt4.cpp~	2011-03-27 03:48:08.000000000 +0200
++++ uim-1.7.0/qt4/chardict/qt4.cpp	2011-07-18 01:09:06.752063391 +0200
+@@ -66,9 +66,9 @@
+ {
+ 
+     setlocale(LC_ALL, "");
+-    bindtextdomain(PACKAGE "-chardict-qt", LOCALEDIR);
+-    textdomain(PACKAGE "-chardict-qt");
+-    bind_textdomain_codeset(PACKAGE "-chardict-qt", "UTF-8");
++    bindtextdomain(PACKAGE "-chardict-qt4", LOCALEDIR);
++    textdomain(PACKAGE "-chardict-qt4");
++    bind_textdomain_codeset(PACKAGE "-chardict-qt4", "UTF-8");
+ 
+     QApplication a( argc, argv );
+ 
