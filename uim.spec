@@ -1,7 +1,3 @@
-#
-# TODO:
-#	- SPLIT IT!
-#
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
