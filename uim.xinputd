@@ -1,0 +1,36 @@
+XIM=uim
+XIM_PROGRAM=/usr/bin/uim-xim
+SHORT_DESC=UIM
+PREFERENCE_PROGRAM=/usr/bin/uim-pref-gtk
+AUXILIARY_PROGRAM=/usr/bin/uim-toolbar-gtk-systray
+ICON=/usr/share/uim/pixmaps/uim-icon.png
+
+gtkimm_exists () {
+	# check if any immodules installed
+	for dir in /usr/@@LIB@@/gtk-2.0/*/immodules; do
+		[ -x ${dir}/im-uim.so ] && return 0
+	done
+	return 1
+}
+
+if gtkimm_exists; then
+	GTK_IM_MODULE=uim
+else
+	GTK_IM_MODULE=xim
+fi
+
+if [ -x /usr/@@LIB@@/qt4/plugins/inputmethods/libuiminputcontextplugin.so ]; then
+	QT_IM_MODULE=uim
+else
+	QT_IM_MODULE=xim
+fi
+
+if [ "x$DESKTOP_SESSION" = "xkde" ]; then
+	if test -x /usr/@@LIB@@/uim-candwin-qt4; then
+		UIM_CANDWIN_PROG=/usr/@@LIB@@/uim-candwin-qt4
+		export UIM_CANDWIN_PROG
+	fi
+	if test -x /usr/bin/uim-pref-qt4; then
+		PREFERENCE_PROGRAM=/usr/bin/uim-pref-qt4
+	fi
+fi
