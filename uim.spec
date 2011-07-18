@@ -298,7 +298,7 @@ cp -a xim/README xim/README.xim
 	--with-libedit \
 	--with-eb
 
-%{__make}
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
