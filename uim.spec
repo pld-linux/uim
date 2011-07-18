@@ -2,7 +2,7 @@ Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
 Version:	1.7.0
-Release:	0.1
+Release:	0.2
 License:	GPL or BSD
 Group:		Libraries
 Source0:	http://uim.googlecode.com/files/%{name}-%{version}.tar.bz2
@@ -83,7 +83,7 @@ Pliki nagłówkowe biblioteki uim.
 %package gtk2
 Summary:	GTK+2 support for Uim
 Group:		X11/Applications
-Requires:	uim = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 # for update-gtk-immodules
 Requires(post):	gtk+2 >= 2.9.1-2
 Requires(postun):	gtk+2
@@ -97,7 +97,7 @@ This package provides the Gtk IM module and helper program.
 %package gtk3
 Summary:	GTK+3 support for Uim
 Group:		X11/Applications
-Requires:	uim = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 # for update-gtk-immodules
 Requires(post):	gtk+3
 Requires(postun):	gtk+3
@@ -111,7 +111,7 @@ This package provides the Gtk IM module and helper program.
 %package gnome
 Summary:	GNOME Applet for Uim
 Group:		X11/Applications
-Requires:	uim = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 Requires:	uim-gtk3
 
 %description gnome
@@ -144,7 +144,7 @@ This package provides the Qt3 IM module and helper programs.
 %package kde
 Summary:	KDE Applet for Uim
 Group:		X11/Applications
-Requires:	uim = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 Requires:	uim-qt
 
 %description kde
@@ -165,7 +165,7 @@ This package provides Emacs support.
 %package -n emacs-common-uim
 Summary:	Common package for Emacsen support for Uim
 Group:		Libraries
-Requires:	uim = %{version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 
 %description -n emacs-common-uim
 This package provides an utility to use Emacsen support for Uim.
@@ -183,11 +183,9 @@ This package provides XEmacs support.
 Summary:	Anthy support for Uim
 Group:		Libraries
 Requires:	anthy >= 9100h
-Requires:	uim = %{version}-%{release}
-Requires(post):	gtk+3
-Requires(post):	/usr/bin/uim-module-manager
-Requires(postun):	gtk+3
-Requires(postun):	/usr/bin/uim-module-manager
+Requires:	%{name} = %{version}-%{release}
+Requires(post):	%{_bindir}/uim-module-manager
+Requires(postun):	%{_bindir}/uim-module-manager
 
 %description anthy
 This package provides support for Anthy, a Japanese input method.
@@ -196,11 +194,9 @@ This package provides support for Anthy, a Japanese input method.
 Summary:	Canna support for Uim
 Group:		Libraries
 Requires:	Canna
-Requires:	uim = %{version}-%{release}
-Requires(post):	gtk+3
-Requires(post):	/usr/bin/uim-module-manager
-Requires(postun):	gtk+3
-Requires(postun):	/usr/bin/uim-module-manager
+Requires:	%{name} = %{version}-%{release}
+Requires(post):	%{_bindir}/uim-module-manager
+Requires(postun):	%{_bindir}/uim-module-manager
 
 %description canna
 This package provides support for Canna, a Japanese input method.
@@ -209,24 +205,32 @@ This package provides support for Canna, a Japanese input method.
 Summary:	Mana support for Uim
 Group:		Libraries
 Requires:	mana
-Requires:	uim = %{version}-%{release}
-Requires(post):	gtk+3
-Requires(post):	/usr/bin/uim-module-manager
-Requires(postun):	gtk+3
-Requires(postun):	/usr/bin/uim-module-manager
+Requires:	mana-uim
+Requires:	%{name} = %{version}-%{release}
+Requires(post):	%{_bindir}/uim-module-manager
+Requires(postun):	%{_bindir}/uim-module-manager
 
 %description mana
 This package provides support for mana, a Japanese input method.
+
+%package prime
+Summary:	PRIME support for Uim
+Group:		Libraries
+Requires:	prime
+Requires:	%{name} = %{version}-%{release}
+Requires(post):	%{_bindir}/uim-module-manager
+Requires(postun):	%{_bindir}/uim-module-manager
+
+%description prime
+This package provides support for PRIME, a Japanese input method.
 
 %package skk
 Summary:	SKK support for Uim
 Group:		Libraries
 Requires:	skkdic
-Requires:	uim = %{version}-%{release}
-Requires(post):	gtk+3
-Requires(post):	/usr/bin/uim-module-manager
-Requires(postun):	gtk+3
-Requires(postun):	/usr/bin/uim-module-manager
+Requires:	%{name} = %{version}-%{release}
+Requires(post):	%{_bindir}/uim-module-manager
+Requires(postun):	%{_bindir}/uim-module-manager
 
 %description skk
 This package provides support for SKK, a Japanese input method.
@@ -234,11 +238,9 @@ This package provides support for SKK, a Japanese input method.
 %package m17n
 Summary:	m17n-lib support for Uim
 Group:		Libraries
-Requires:	uim = %{version}-%{release}
-Requires(post):	gtk+3
-Requires(post):	/usr/bin/uim-module-manager
-Requires(postun):	gtk+3
-Requires(postun):	/usr/bin/uim-module-manager
+Requires:	%{name} = %{version}-%{release}
+Requires(post):	%{_bindir}/uim-module-manager
+Requires(postun):	%{_bindir}/uim-module-manager
 
 %description m17n
 This package provides support for m17n-lib, which allows input of many
@@ -271,7 +273,7 @@ cp -a xim/README xim/README.xim
 	--enable-pref \
 	--enable-notify=libnotify \
 	--without-scim \
-	--with-anthy \
+	--without-anthy \
 	--with-anthy-utf8 \
 	--with-canna \
 	--with-m17nlib \
@@ -301,7 +303,8 @@ cp -a xim/README xim/README.xim
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d \
-	$RPM_BUILD_ROOT%{_datadir}/{emacs/site-lisp,xemacs/site-packages/lisp}/site-start.d
+	$RPM_BUILD_ROOT%{_datadir}/{emacs/site-lisp,xemacs/site-packages/lisp}/site-start.d \
+	$RPM_BUILD_ROOT%{_localstatedir}/lib/uim
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -317,6 +320,30 @@ make install -C emacs \
 install -p %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/site-start.d/
 install -p %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/xemacs/site-packages/lisp/site-start.d/
 
+mv $RPM_BUILD_ROOT%{_datadir}/uim/{installed-modules,loader}.scm $RPM_BUILD_ROOT%{_localstatedir}/lib/uim/
+ln -sf %{_localstatedir}/lib/uim/installed-modules.scm $RPM_BUILD_ROOT%{_datadir}/uim/
+ln -sf %{_localstatedir}/lib/uim/loader.scm $RPM_BUILD_ROOT%{_datadir}/uim/
+
+# Register additional input methods
+LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir} \
+LIBUIM_SYSTEM_SCM_FILES=$RPM_BUILD_ROOT%{_datadir}/uim/lib \
+LIBUIM_SCM_FILES=$RPM_BUILD_ROOT%{_datadir}/uim \
+LIBUIM_PLUGIN_LIB_DIR=$RPM_BUILD_ROOT%{_libdir}/uim/plugin \
+UIM_DISABLE_NOTIFY=1 \
+$RPM_BUILD_ROOT%{_bindir}/uim-module-manager \
+		--path $RPM_BUILD_ROOT%{_localstatedir}/lib/uim \
+		--register tcode trycode hangul
+
+# Unregister methods that come from separate packages
+LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir} \
+LIBUIM_SYSTEM_SCM_FILES=$RPM_BUILD_ROOT%{_datadir}/uim/lib \
+LIBUIM_SCM_FILES=$RPM_BUILD_ROOT%{_datadir}/uim \
+LIBUIM_PLUGIN_LIB_DIR=$RPM_BUILD_ROOT%{_libdir}/uim/plugin \
+UIM_DISABLE_NOTIFY=1 \
+$RPM_BUILD_ROOT%{_bindir}/uim-module-manager \
+		--path $RPM_BUILD_ROOT%{_localstatedir}/lib/uim \
+		--unregister anthy anthy-utf8 canna mana skk m17nlib
+
 %find_lang %{name}
 %find_lang %{name}-chardict-qt
 %find_lang %{name}-chardict-qt4
@@ -324,31 +351,89 @@ install -p %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/xemacs/site-packages/lisp/site-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
-umask 022
-/sbin/ldconfig
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+
+%post gtk2
 %if "%{_lib}" != "lib"
 %{_bindir}/gtk-query-immodules-2.0-64 > %{_sysconfdir}/gtk64-2.0/gtk.immodules
-%{_bindir}/gtk-query-immodules-3.0-64 --update-cache
 %else
 %{_bindir}/gtk-query-immodules-2.0 > %{_sysconfdir}/gtk-2.0/gtk.immodules
+%endif
+
+%postun gtk2
+%if "%{_lib}" != "lib"
+%{_bindir}/gtk-query-immodules-2.0-64 > %{_sysconfdir}/gtk64-2.0/gtk.immodules
+%else
+%{_bindir}/gtk-query-immodules-2.0 > %{_sysconfdir}/gtk-2.0/gtk.immodules
+%endif
+
+%post gtk3
+%if "%{_lib}" != "lib"
+%{_bindir}/gtk-query-immodules-3.0-64 --update-cache
+%else
 %{_bindir}/gtk-query-immodules-3.0 --update-cache
 %endif
 
-%postun
-umask 022
-/sbin/ldconfig
+%postun gtk3
 %if "%{_lib}" != "lib"
-%{_bindir}/gtk-query-immodules-2.0-64 > %{_sysconfdir}/gtk64-2.0/gtk.immodules
 %{_bindir}/gtk-query-immodules-3.0-64 --update-cache
 %else
-%{_bindir}/gtk-query-immodules-2.0 > %{_sysconfdir}/gtk-2.0/gtk.immodules
 %{_bindir}/gtk-query-immodules-3.0 --update-cache
 %endif
+
+%post anthy
+%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register anthy-utf8
+
+%postun anthy
+if [ "$1" = "0" ]; then
+	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister anthy-utf8
+fi
+
+%post canna
+%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register canna
+
+%postun canna
+if [ "$1" = "0" ]; then
+	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister canna
+fi
+
+%post prime
+%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register prime
+
+%postun prime
+if [ "$1" = "0" ]; then
+	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister prime
+fi
+
+%post mana
+%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register mana
+
+%postun mana
+if [ "$1" = "0" ]; then
+	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister mana
+fi
+
+%post skk
+%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register skk
+
+%postun skk
+if [ "$1" = "0" ]; then
+	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister skk
+fi
+
+%post m17n
+%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register m17nlib
+
+%postun m17n
+if [ "$1" = "0" ]; then
+	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister m17nlib
+fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README
+%doc fep/README.fep fep/README.fep.ja fep/README.fep.key xim/README.xim
 %{_sysconfdir}/X11/xinit/xinput.d/uim.conf
 %attr(755,root,root) %{_bindir}/uim-fep
 %attr(755,root,root) %{_bindir}/uim-fep-tick
@@ -380,6 +465,8 @@ umask 022
 %{_datadir}/%{name}/*
 %{_desktopdir}/uim.desktop
 %{_mandir}/man1/*.1*
+%dir %{_localstatedir}/lib/uim
+%verify(not md5 mtime size) %{_localstatedir}/lib/uim/*.scm
 
 %files devel
 %defattr(644,root,root,755)
@@ -458,8 +545,7 @@ umask 022
 
 %files anthy
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/uim/plugin/libuim-anthy.so
-%attr(755,root,root) %{_libdir}/uim/plugin/libuim-anthy-utf8.so
+%attr(755,root,root) %{_libdir}/uim/plugin/libuim-anthy*.so
 %{_datadir}/uim/anthy*.scm
 %{_datadir}/uim/pixmaps/anthy*.png
 
@@ -473,6 +559,11 @@ umask 022
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-mana.so
 %{_datadir}/uim/mana*.scm
 %{_datadir}/uim/pixmaps/mana.png
+
+%files prime
+%defattr(644,root,root,755)
+%{_datadir}/uim/prime*.scm
+%{_datadir}/uim/pixmaps/prime.png
 
 %files skk
 %defattr(644,root,root,755)
