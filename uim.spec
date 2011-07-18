@@ -306,11 +306,11 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d \
 	$RPM_BUILD_ROOT%{_datadir}/{emacs/site-lisp,xemacs/site-packages/lisp}/site-start.d \
 	$RPM_BUILD_ROOT%{_localstatedir}/lib/uim
 
-%{__make} install \
+%{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 # For XEmacs
-make install -C emacs \
+%{__make} -j1 install -C emacs \
 	DESTDIR=$RPM_BUILD_ROOT \
 	UIMEL_LISP_DIR=%{_datadir}/xemacs/site-packages/lisp/uim-el
 
