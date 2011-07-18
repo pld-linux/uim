@@ -2,7 +2,7 @@ Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
 Version:	1.7.0
-Release:	0.2
+Release:	1
 License:	GPL or BSD
 Group:		Libraries
 Source0:	http://uim.googlecode.com/files/%{name}-%{version}.tar.bz2
