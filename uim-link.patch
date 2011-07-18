@@ -40,9 +40,11 @@
      AC_CHECK_FUNCS(forkpty)
      if test $ac_cv_func_forkpty = no; then
        AC_CHECK_LIB(util, forkpty, [AC_DEFINE(HAVE_FORKPTY) FEP_LIBADD="-lutil $FEP_LIBADD"])
-@@ -1176,9 +1176,9 @@
+@@ -1174,14 +1174,13 @@
+     saved_CPPFLAGS=$CPPFLAGS
+     saved_LDFLAGS=$LDFLAGS
      CPPFLAGS="${CPPFLAGS} -I$libedit_path/include"
-     LDFLAGS="${LDFLAGS} -L$libedit_path/lib"
+-    LDFLAGS="${LDFLAGS} -L$libedit_path/lib"
      AC_CHECK_LIB(curses, tgetent, LIBEDIT_LIBS="-lcurses",
 -        [AC_CHECK_LIB(ncurses, tgetent, LIBEDIT_LIBS="-lncurses",
 +        [AC_CHECK_LIB(ncurses, tgetent, LIBEDIT_LIBS="-lncurses -ltinfo",
@@ -51,4 +53,8 @@
 +            use_libedit="no","-ltinfo")])
      if test "x$use_libedit" != "xno"; then
          AC_CHECK_LIB(edit, el_init,
-             [LIBEDIT_LIBS="-ledit $LIBEDIT_LIBS -L$libedit_path/lib"
+-            [LIBEDIT_LIBS="-ledit $LIBEDIT_LIBS -L$libedit_path/lib"
++            [LIBEDIT_LIBS="-ledit $LIBEDIT_LIBS"
+                 AC_SUBST(LIBEDIT_LIBS)],
+             [AC_MSG_WARN("libedit not found. Disabled...")
+                 use_libedit="no"])
