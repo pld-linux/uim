@@ -2,7 +2,7 @@ Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
 Version:	1.7.0
-Release:	1
+Release:	2
 License:	GPL or BSD
 Group:		Libraries
 Source0:	http://uim.googlecode.com/files/%{name}-%{version}.tar.bz2
@@ -303,7 +303,7 @@ cp -a xim/README xim/README.xim
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d \
-	$RPM_BUILD_ROOT%{_datadir}/{emacs/site-lisp,xemacs/site-packages/lisp}/site-start.d \
+	$RPM_BUILD_ROOT%{_datadir}/{emacs/site-lisp,xemacs-packages/lisp}/site-start.d \
 	$RPM_BUILD_ROOT%{_localstatedir}/lib/uim
 
 %{__make} -j1 install \
@@ -312,13 +312,13 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d \
 # For XEmacs
 %{__make} -j1 install -C emacs \
 	DESTDIR=$RPM_BUILD_ROOT \
-	UIMEL_LISP_DIR=%{_datadir}/xemacs/site-packages/lisp/uim-el
+	UIMEL_LISP_DIR=%{_datadir}/xemacs-packages/lisp/uim-el
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}{,/gtk*/*/immodules,/uim/*}/*.la
 
 %{__sed} -e 's|@@LIB@@|%{_lib}|g' %{SOURCE1} >$RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d/uim.conf
 install -p %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/site-start.d/
-install -p %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/xemacs/site-packages/lisp/site-start.d/
+install -p %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/xemacs-packages/lisp/
 
 mv $RPM_BUILD_ROOT%{_datadir}/uim/{installed-modules,loader}.scm $RPM_BUILD_ROOT%{_localstatedir}/lib/uim/
 ln -sf %{_localstatedir}/lib/uim/installed-modules.scm $RPM_BUILD_ROOT%{_datadir}/uim/
@@ -533,8 +533,8 @@ fi
 
 %files -n xemacs-uim
 %defattr(644,root,root,755)
-%{_datadir}/xemacs/site-packages/lisp/uim-el
-%{_datadir}/xemacs/site-packages/lisp/site-start.d/uim-init.el
+%{_datadir}/xemacs-packages/lisp/uim-el
+%{_datadir}/xemacs-packages/lisp/uim-init.el
 
 %files -n emacs-common-uim
 %defattr(644,root,root,755)
