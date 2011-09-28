@@ -1,12 +1,12 @@
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
-Version:	1.7.0
-Release:	3
+Version:	1.7.1
+Release:	1
 License:	GPL or BSD
 Group:		Libraries
 Source0:	http://uim.googlecode.com/files/%{name}-%{version}.tar.bz2
-# Source0-md5:	1633f131ea58b34fd85e15411e3cc363
+# Source0-md5:	80027d3706f28d1dff9a159139b87adf
 Source1:	%{name}.xinputd
 Source2:	%{name}-init.el
 Patch0:		%{name}-link.patch
@@ -25,6 +25,7 @@ BuildRequires:	curl-devel
 BuildRequires:	eb-devel
 BuildRequires:	expat-devel
 BuildRequires:	gcc-objc
+BuildRequires:	gnome-panel-devel
 BuildRequires:	gtk+2-devel >= 2:2.2.0
 BuildRequires:	gtk+3-devel
 BuildRequires:	kde4-kdelibs-devel
@@ -264,7 +265,7 @@ cp -a xim/README xim/README.xim
 %{__automake}
 %configure \
 	--enable-openssl \
-	--enable-gnome2-applet \
+	--disable-gnome2-applet \
 	--enable-gnome3-applet \
 	--enable-qt4-qt3support \
 	--enable-default-toolkit=gtk3 \
