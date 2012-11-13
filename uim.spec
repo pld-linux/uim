@@ -1,18 +1,15 @@
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
-Version:	1.7.1
-Release:	2
+Version:	1.8.3
+Release:	1
 License:	GPL or BSD
 Group:		Libraries
 Source0:	http://uim.googlecode.com/files/%{name}-%{version}.tar.bz2
-# Source0-md5:	80027d3706f28d1dff9a159139b87adf
+# Source0-md5:	918ce698765ea25b402a110b86b4d23c
 Source1:	%{name}.xinputd
 Source2:	%{name}-init.el
-Patch0:		%{name}-link.patch
-Patch1:		%{name}-emacs-utf8.patch
-Patch2:		%{name}-enable-libgcroots.patch
-Patch3:		%{name}-qt-po.patch
+Patch0:		%{name}-emacs-utf8.patch
 URL:		http://uim.freedesktop.org/
 BuildRequires:	Canna-devel
 BuildRequires:	Qt3Support-devel
@@ -250,9 +247,6 @@ languages using the input table map from m17n-db.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 cp -a fep/README fep/README.fep
 cp -a fep/README.ja fep/README.fep.ja
@@ -260,10 +254,8 @@ cp -a fep/README.key fep/README.fep.key
 cp -a xim/README xim/README.xim
 
 %build
-%{__aclocal} -I m4
-%{__autoconf}
-%{__automake}
 %configure \
+	--with-libgcroots=installed \
 	--enable-openssl \
 	--disable-gnome2-applet \
 	--enable-gnome3-applet \
@@ -308,6 +300,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d \
 	$RPM_BUILD_ROOT%{_localstatedir}/lib/uim
 
 %{__make} -j1 install \
+	QT_PLUGINSDIR=%{_libdir}/qt/plugins-mt \
 	DESTDIR=$RPM_BUILD_ROOT
 
 # For XEmacs
@@ -315,7 +308,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d \
 	DESTDIR=$RPM_BUILD_ROOT \
 	UIMEL_LISP_DIR=%{_datadir}/xemacs-packages/lisp/uim-el
 
-%{__rm} $RPM_BUILD_ROOT%{_libdir}{,/gtk*/*/immodules,/uim/*}/*.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}{,/gtk*/*/immodules,/uim/*,/qt/plugins-mt/*}/*.la
 
 %{__sed} -e 's|@@LIB@@|%{_lib}|g' %{SOURCE1} >$RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d/uim.conf
 install -p %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/site-start.d/
@@ -346,8 +339,6 @@ $RPM_BUILD_ROOT%{_bindir}/uim-module-manager \
 		--unregister anthy anthy-utf8 canna mana skk m17nlib
 
 %find_lang %{name}
-%find_lang %{name}-chardict-qt
-%find_lang %{name}-chardict-qt4
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -464,6 +455,19 @@ fi
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-sqlite3.so
 %dir %{_datadir}/uim
 %{_datadir}/%{name}/*
+%exclude %{_datadir}/uim/anthy*.scm
+%exclude %{_datadir}/uim/canna*.scm
+%exclude %{_datadir}/uim/mana*.scm
+%exclude %{_datadir}/uim/prime*.scm
+%exclude %{_datadir}/uim/skk*.scm
+%exclude %{_datadir}/uim/m17nlib.scm
+%exclude %{_datadir}/uim/pixmaps/anthy*.png
+%exclude %{_datadir}/uim/pixmaps/canna.png
+%exclude %{_datadir}/uim/pixmaps/mana.png
+%exclude %{_datadir}/uim/pixmaps/prime.png
+%exclude %{_datadir}/uim/pixmaps/skk*.png
+%exclude %{_datadir}/uim/pixmaps/skk*.svg
+%exclude %{_datadir}/uim/pixmaps/m17n*png
 %{_desktopdir}/uim.desktop
 %{_mandir}/man1/*.1*
 %dir %{_localstatedir}/lib/uim
@@ -486,6 +490,7 @@ fi
 %attr(755,root,root) %{_libdir}/gtk-2.0/*/immodules/*.so
 %attr(755,root,root) %{_libdir}/uim-candwin-gtk
 %attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk
+%attr(755,root,root) %{_libdir}/uim-candwin-horizontal-gtk
 
 %files gtk3
 %defattr(644,root,root,755)
@@ -498,6 +503,7 @@ fi
 %attr(755,root,root) %{_libdir}/gtk-3.0/*/immodules/*.so
 %attr(755,root,root) %{_libdir}/uim-candwin-gtk3
 %attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk3
+%attr(755,root,root) %{_libdir}/uim-candwin-horizontal-gtk3
 
 %files gnome
 %defattr(644,root,root,755)
@@ -505,7 +511,7 @@ fi
 %{_datadir}/dbus-1/services/org.gnome.panel.applet.UimAppletFactory.service
 %{_datadir}/gnome-panel/4.0/applets/UimApplet.panel-applet
 
-%files qt -f %{name}-chardict-qt4.lang
+%files qt
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/uim-chardict-qt4
 %attr(755,root,root) %{_bindir}/uim-im-switcher-qt4
@@ -514,13 +520,14 @@ fi
 %attr(755,root,root) %{_libdir}/qt4/plugins/inputmethods/*.so
 %attr(755,root,root) %{_libdir}/uim-candwin-qt4
 
-%files qt3 -f %{name}-chardict-qt.lang
+%files qt3
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/uim-chardict-qt
 %attr(755,root,root) %{_bindir}/uim-im-switcher-qt
 %attr(755,root,root) %{_bindir}/uim-pref-qt
 %attr(755,root,root) %{_bindir}/uim-toolbar-qt
 %attr(755,root,root) %{_libdir}/uim-candwin-qt
+%attr(755,root,root) %{_libdir}/qt/plugins-mt/inputmethods/*.so
 
 %files kde
 %defattr(644,root,root,755)
