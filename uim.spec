@@ -1,9 +1,12 @@
 #
 # Conditional build:
-%bcond_without	eb	# EB support
 %bcond_without	gnome	# GNOME panel applet
 %bcond_without	kde	# KDE panel applet
-%bcond_without	mana	# mana support
+%bcond_without	anthy	# Anthy IM support
+%bcond_without	canna	# Canna IM support
+%bcond_without	eb	# EB IM support
+%bcond_without	m17n	# m17n IM support
+%bcond_without	mana	# mana IM support
 #
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
@@ -19,9 +22,9 @@ Source1:	%{name}.xinputd
 Source2:	%{name}-init.el
 Patch0:		%{name}-emacs-utf8.patch
 URL:		http://uim.freedesktop.org/
-BuildRequires:	Canna-devel
+%{?with_canna:BuildRequires:	Canna-devel}
 #?BuildRequires:	Qt3Support-devel
-BuildRequires:	anthy-devel >= 9100h-2
+%{?with_anthy:BuildRequires:	anthy-devel >= 9100h-2}
 BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_kde:BuildRequires:	automoc4}
@@ -39,10 +42,10 @@ BuildRequires:	libffi-devel
 BuildRequires:	libgcroots-devel
 %{?with_gnome:BuildRequires:	libgnome-devel >= 2.4.0}
 BuildRequires:	libtool
-BuildRequires:	m17n-lib-devel
+%{?with_m17n:BuildRequires:	m17n-lib-devel}
 %{?with_mana:BuildRequires:	mana}
 BuildRequires:	openssl-devel
-BuildRequires:	qt-devel
+BuildRequires:	qt-devel >= 3
 BuildRequires:	qt4-qmake
 BuildRequires:	sqlite3-devel
 BuildRequires:	xorg-lib-libX11-devel
@@ -59,7 +62,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Uim is a multilingual input method library. Uim aims to provide secure
 and useful input methods for all languages. Currently, it can input to
-applications which support Gtk+'s immodule, Qt's immodule and XIM.
+applications which support GTK+'s immodule, Qt's immodule and XIM.
 
 This package provides the input method library, the XIM bridge and
 most of the input methods.
@@ -71,8 +74,17 @@ For the Japanese input methods you need to install
 
 %description -l pl.UTF-8
 Uim jest biblioteką obsługującą wejście w wielu językach. Celem
-projektu jest udostępnienie bezpiecznej i użytecznej metody dla
-wszystkich języków.
+projektu jest udostępnienie bezpiecznych i użytecznych metod
+wprowadzania dla wszystkich języków. Obecnie potrafi obsłużyć
+aplikacje obsługujące moduły IM z GTK+, moduły IM z Qt oraz XIM.
+
+Ten pakiet udostępnia bibliotekę metody wprowadzania, mostek XIM oraz
+większość metod wprowadzania.
+
+Do wprowadzania tekstu japońskiego trzeba zainstalować:
+- uim-anthy dla metody Anthy
+- uim-canna dla metody Canna
+- uim-skk dla SKK.
 
 %package devel
 Summary:	Header files for uim libraryi
@@ -87,97 +99,154 @@ Header files for uim library.
 Pliki nagłówkowe biblioteki uim.
 
 %package gtk2
-Summary:	GTK+2 support for Uim
+Summary:	GTK+ 2 support for Uim
+Summary(pl.UTF-8):	Obsługa GTK+ 2 dla biblioteki Uim
 Group:		X11/Applications
 Requires:	%{name} = %{version}-%{release}
 # for update-gtk-immodules
-Requires(post):	gtk+2 >= 2.9.1-2
-Requires(postun):	gtk+2
+Requires(post,postun):	gtk+2 >= 2:2.9.1-2
 
 %description gtk2
 Uim is a multilingual input method library. Uim aims to provide secure
 and useful input methods for all languages.
 
-This package provides the Gtk IM module and helper program.
+This package provides the GTK+ 2 IM module and helper program.
+
+%description gtk2 -l pl.UTF-8
+Uim jest biblioteką obsługującą wejście w wielu językach. Celem
+projektu jest udostępnienie bezpiecznych i użytecznych metod
+wprowadzania dla wszystkich języków.
+
+Ten pakiet zawiera moduł IM GTK+ 2 oraz program pomocniczy.
 
 %package gtk3
-Summary:	GTK+3 support for Uim
+Summary:	GTK+ 3 support for Uim
+Summary(pl.UTF-8):	Obsługa GTK+ 3 dla biblioteki Uim
 Group:		X11/Applications
 Requires:	%{name} = %{version}-%{release}
 # for update-gtk-immodules
-Requires(post):	gtk+3
-Requires(postun):	gtk+3
+Requires(post,postun):	gtk+3
 
 %description gtk3
 Uim is a multilingual input method library. Uim aims to provide secure
 and useful input methods for all languages.
 
-This package provides the Gtk IM module and helper program.
+This package provides the GTK+ 3 IM module and helper program.
+
+%description gtk3 -l pl.UTF-8
+Uim jest biblioteką obsługującą wejście w wielu językach. Celem
+projektu jest udostępnienie bezpiecznych i użytecznych metod
+wprowadzania dla wszystkich języków.
+
+Ten pakiet zawiera moduł IM GTK+ 3 oraz program pomocniczy.
 
 %package gnome
-Summary:	GNOME Applet for Uim
+Summary:	GNOME 3 Applet for Uim
+Summary(pl.UTF-8):	Aplet GNOME 3 dla biblioteki Uim
 Group:		X11/Applications
 Requires:	%{name} = %{version}-%{release}
-Requires:	uim-gtk3
+Requires:	%{name}-gtk3 = %{version}-%{release}
 
 %description gnome
 Uim is a multilingual input method library. Uim aims to provide secure
 and useful input methods for all languages.
 
-This package provides the GNOME panel applet.
+This package provides the GNOME 3 panel applet.
 
-%package qt
-Summary:	Qt4 support for Uim
-Group:		X11/Applications
+%description gnome -l pl.UTF-8
+Uim jest biblioteką obsługującą wejście w wielu językach. Celem
+projektu jest udostępnienie bezpiecznych i użytecznych metod
+wprowadzania dla wszystkich języków.
 
-%description qt
-Uim is a multilingual input method library. Uim aims to provide secure
-and useful input methods for all languages.
-
-This package provides the Qt4 IM module and helper programs.
+Ten pakiet zawiera aplet panelu GNOME 3.
 
 %package qt3
-Summary:	Qt3 support for Uim
+Summary:	Qt 3 support for Uim
+Summary(pl.UTF-8):	Obsługa Qt 3 dla biblioteki Uim
 Group:		X11/Applications
+Requires:	%{name} = %{version}-%{release}
 Provides:	%{name}-qt-common = %{version}-%{release}
 
 %description qt3
 Uim is a multilingual input method library. Uim aims to provide secure
 and useful input methods for all languages.
 
-This package provides the Qt3 IM module and helper programs.
+This package provides the Qt 3 IM module and helper programs.
 
-%package kde
-Summary:	KDE Applet for Uim
+%description qt3 -l pl.UTF-8
+Uim jest biblioteką obsługującą wejście w wielu językach. Celem
+projektu jest udostępnienie bezpiecznych i użytecznych metod
+wprowadzania dla wszystkich języków.
+
+Ten pakiet zawiera moduł IM Qt 3 oraz programy pomocnicze.
+
+%package qt
+Summary:	Qt 4 support for Uim
+Summary(pl.UTF-8):	Obsługa Qt 4 dla biblioteki Uim
 Group:		X11/Applications
 Requires:	%{name} = %{version}-%{release}
-Requires:	uim-qt
+
+%description qt
+Uim is a multilingual input method library. Uim aims to provide secure
+and useful input methods for all languages.
+
+This package provides the Qt 4 IM module and helper programs.
+
+%description qt -l pl.UTF-8
+Uim jest biblioteką obsługującą wejście w wielu językach. Celem
+projektu jest udostępnienie bezpiecznych i użytecznych metod
+wprowadzania dla wszystkich języków.
+
+Ten pakiet zawiera moduł IM Qt 4 oraz programy pomocnicze.
+
+%package kde
+Summary:	KDE 4 Applet for Uim
+Summary(pl.UTF-8):	Aplet KDE 4 dla biblioteki Uim
+Group:		X11/Applications
+Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-qt = %{version}-%{release}
 
 %description kde
 Uim is a multilingual input method library. Uim aims to provide secure
 and useful input methods for all languages.
 
-This package provides the KDE applet.
+This package provides the KDE 4 applet.
 
-%package -n emacs-uim
-Summary:	Emacs support for Uim
-Group:		Libraries
-Requires:	emacs
-Requires:	emacs-common-uim = %{version}-%{release}
+%description kde -l pl.UTF-8
+Uim jest biblioteką obsługującą wejście w wielu językach. Celem
+projektu jest udostępnienie bezpiecznych i użytecznych metod
+wprowadzania dla wszystkich języków.
 
-%description -n emacs-uim
-This package provides Emacs support.
+Ten pakiet zawiera aplet KDE 4.
 
 %package -n emacs-common-uim
 Summary:	Common package for Emacsen support for Uim
+Summary(pl.UTF-8):	Pakiet wspólny Uima dla emacsów
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description -n emacs-common-uim
 This package provides an utility to use Emacsen support for Uim.
 
+%description -n emacs-common-uim -l pl.UTF-8
+Ten pakiet zawiera narzędzia pozwalające na używanie Uima w emacsach.
+
+%package -n emacs-uim
+Summary:	Emacs support for Uim
+Summary(pl.UTF-8):	Obsługa Uima w Emacsie
+Group:		Libraries
+Requires:	emacs
+Requires:	emacs-common-uim = %{version}-%{release}
+
+%description -n emacs-uim
+This package provides Emacs support for Uim.
+
+%description -n emacs-uim
+Ten pakiet zapewnia obsługę Uima w Emacsie.
+
 %package -n xemacs-uim
 Summary:	XEmacs support for Uim
+Summary(pl.UTF-8):	Obsługa Uima w XEmacsie
 Group:		Libraries
 Requires:	emacs-common-uim = %{version}-%{release}
 Requires:	xemacs
@@ -185,72 +254,99 @@ Requires:	xemacs
 %description -n xemacs-uim
 This package provides XEmacs support.
 
+%description -n xemacs-uim -l pl.UTF-8
+Ten pakiet zapewnia obsługę Uima w XEmacsie.
+
 %package anthy
 Summary:	Anthy support for Uim
+Summary(pl.UTF-8):	Obsługa metody Anthy w Uimie
 Group:		Libraries
-Requires:	anthy >= 9100h
+Requires(post,postun):	%{_bindir}/uim-module-manager
 Requires:	%{name} = %{version}-%{release}
-Requires(post):	%{_bindir}/uim-module-manager
-Requires(postun):	%{_bindir}/uim-module-manager
+Requires:	anthy >= 9100h
 
 %description anthy
 This package provides support for Anthy, a Japanese input method.
 
+%description anthy -l pl.UTF-8
+Ten pakiet zawiera obsługę metody Anthy wprowadzania znaków
+japońskich.
+
 %package canna
 Summary:	Canna support for Uim
+Summary(pl.UTF-8):	Obsługa metody Canna w Uimie
 Group:		Libraries
-Requires:	Canna
+Requires(post,postun):	%{_bindir}/uim-module-manager
 Requires:	%{name} = %{version}-%{release}
-Requires(post):	%{_bindir}/uim-module-manager
-Requires(postun):	%{_bindir}/uim-module-manager
+Requires:	Canna
 
 %description canna
 This package provides support for Canna, a Japanese input method.
 
-%package mana
-Summary:	Mana support for Uim
-Group:		Libraries
-Requires:	mana
-Requires:	mana-uim
-Requires:	%{name} = %{version}-%{release}
-Requires(post):	%{_bindir}/uim-module-manager
-Requires(postun):	%{_bindir}/uim-module-manager
-
-%description mana
-This package provides support for mana, a Japanese input method.
-
-%package prime
-Summary:	PRIME support for Uim
-Group:		Libraries
-Requires:	prime
-Requires:	%{name} = %{version}-%{release}
-Requires(post):	%{_bindir}/uim-module-manager
-Requires(postun):	%{_bindir}/uim-module-manager
-
-%description prime
-This package provides support for PRIME, a Japanese input method.
-
-%package skk
-Summary:	SKK support for Uim
-Group:		Libraries
-Requires:	skkdic
-Requires:	%{name} = %{version}-%{release}
-Requires(post):	%{_bindir}/uim-module-manager
-Requires(postun):	%{_bindir}/uim-module-manager
-
-%description skk
-This package provides support for SKK, a Japanese input method.
+%description canna -l pl.UTF-8
+Ten pakiet zawiera obsługę metody Canna wprowadzania znaków
+japońskich.
 
 %package m17n
 Summary:	m17n-lib support for Uim
+Summary(pl.UTF-8):	Obsługa m17n-lib w Uimie
 Group:		Libraries
+Requires(post,postun):	%{_bindir}/uim-module-manager
 Requires:	%{name} = %{version}-%{release}
-Requires(post):	%{_bindir}/uim-module-manager
-Requires(postun):	%{_bindir}/uim-module-manager
 
 %description m17n
 This package provides support for m17n-lib, which allows input of many
 languages using the input table map from m17n-db.
+
+%description m17n -l pl.UTF-8
+Ten pakiet zawiera obsługę m17n-lib, co pozwala na wprowadzanie znaków
+wielu języków przy użyciu tablic wejściowych z m17n-db.
+
+%package mana
+Summary:	Mana support for Uim
+Summary(pl.UTF-8):	Obsługa metody Mana w Uimie
+Group:		Libraries
+Requires(post,postun):	%{_bindir}/uim-module-manager
+Requires:	%{name} = %{version}-%{release}
+Requires:	mana
+Requires:	mana-uim
+
+%description mana
+This package provides support for mana, a Japanese input method.
+
+%description mana -l pl.UTF-8
+Ten pakiet zawiera obsługę metody Mana wprowadzania znaków
+japońskich.
+
+%package prime
+Summary:	PRIME support for Uim
+Summary(pl.UTF-8):	Obsługa metody PRIME w Uimie
+Group:		Libraries
+Requires(post,postun):	%{_bindir}/uim-module-manager
+Requires:	%{name} = %{version}-%{release}
+Requires:	prime
+
+%description prime
+This package provides support for PRIME, a Japanese input method.
+
+%description prime -l pl.UTF-8
+Ten pakiet zawiera obsługę metody PRIME wprowadzania znaków
+japońskich.
+
+%package skk
+Summary:	SKK support for Uim
+Summary(pl.UTF-8):	Obsługa metody SKK w Uimie
+Group:		Libraries
+Requires(post,postun):	%{_bindir}/uim-module-manager
+Requires:	%{name} = %{version}-%{release}
+Requires:	skkdic
+
+%description skk
+This package provides support for SKK, a Japanese input method.
+
+%description skk -l pl.UTF-8
+Ten pakiet zawiera obsługę metody SKK wprowadzania znaków
+japońskich.
 
 %prep
 %setup -q
@@ -277,8 +373,8 @@ cp -a xim/README xim/README.xim
 	--enable-pref \
 	--enable-qt4-qt3support \
 	--without-anthy \
-	--with-anthy-utf8 \
-	--with-canna \
+	%{?with_anthy:--with-anthy-utf8} \
+	%{?with_canna:--with-canna} \
 	--with-curl \
 	%{?with_eb:--with-eb} \
 	--with-expat \
@@ -288,7 +384,7 @@ cp -a xim/README xim/README.xim
 	--with-libedit \
 	--with-libgcroots=installed \
 	--with-lispdir=%{_datadir}/emacs/site-lisp \
-	--with-m17nlib \
+	%{?with_m17n:--with-m17nlib} \
 	%{?with_mana:--with-mana} \
 	--with-prime \
 	--with-qt \
@@ -402,12 +498,12 @@ if [ "$1" = "0" ]; then
 	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister canna
 fi
 
-%post prime
-%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register prime
+%post m17n
+%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register m17nlib
 
-%postun prime
+%postun m17n
 if [ "$1" = "0" ]; then
-	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister prime
+	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister m17nlib
 fi
 
 %post mana
@@ -418,20 +514,20 @@ if [ "$1" = "0" ]; then
 	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister mana
 fi
 
+%post prime
+%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register prime
+
+%postun prime
+if [ "$1" = "0" ]; then
+	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister prime
+fi
+
 %post skk
 %{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register skk
 
 %postun skk
 if [ "$1" = "0" ]; then
 	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister skk
-fi
-
-%post m17n
-%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register m17nlib
-
-%postun m17n
-if [ "$1" = "0" ]; then
-	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister m17nlib
 fi
 
 %files -f %{name}.lang
@@ -525,15 +621,6 @@ fi
 %{_datadir}/gnome-panel/4.0/applets/UimApplet.panel-applet
 %endif
 
-%files qt
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/uim-chardict-qt4
-%attr(755,root,root) %{_bindir}/uim-im-switcher-qt4
-%attr(755,root,root) %{_bindir}/uim-pref-qt4
-%attr(755,root,root) %{_bindir}/uim-toolbar-qt4
-%attr(755,root,root) %{_libdir}/qt4/plugins/inputmethods/*.so
-%attr(755,root,root) %{_libdir}/uim-candwin-qt4
-
 %files qt3
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/uim-chardict-qt
@@ -550,6 +637,22 @@ fi
 %{_datadir}/kde4/services/plasma-applet-uim.desktop
 %endif
 
+%files qt
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/uim-chardict-qt4
+%attr(755,root,root) %{_bindir}/uim-im-switcher-qt4
+%attr(755,root,root) %{_bindir}/uim-pref-qt4
+%attr(755,root,root) %{_bindir}/uim-toolbar-qt4
+%attr(755,root,root) %{_libdir}/qt4/plugins/inputmethods/*.so
+%attr(755,root,root) %{_libdir}/uim-candwin-qt4
+
+%files -n emacs-common-uim
+%defattr(644,root,root,755)
+%doc emacs/README
+%lang(ja) %doc emacs/README.ja
+%attr(755,root,root) %{_bindir}/uim-el-agent
+%attr(755,root,root) %{_bindir}/uim-el-helper-agent
+
 %files -n emacs-uim
 %defattr(644,root,root,755)
 %{_datadir}/emacs/site-lisp/uim-el
@@ -560,23 +663,29 @@ fi
 %{_datadir}/xemacs-packages/lisp/uim-el
 %{_datadir}/xemacs-packages/lisp/uim-init.el
 
-%files -n emacs-common-uim
-%defattr(644,root,root,755)
-%doc emacs/README
-%lang(ja) %doc emacs/README.ja
-%attr(755,root,root) %{_bindir}/uim-el-agent
-%attr(755,root,root) %{_bindir}/uim-el-helper-agent
-
+%if %{with anthy}
 %files anthy
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-anthy*.so
 %{_datadir}/uim/anthy*.scm
 %{_datadir}/uim/pixmaps/anthy*.png
+%endif
 
+%if %{with canna}
 %files canna
 %defattr(644,root,root,755)
 %{_datadir}/uim/canna*.scm
 %{_datadir}/uim/pixmaps/canna.png
+%endif
+
+%if %{with m17n}
+%files m17n
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/uim-m17nlib-relink-icons
+%attr(755,root,root) %{_libdir}/uim/plugin/libuim-m17nlib.so
+%{_datadir}/uim/m17nlib.scm
+%{_datadir}/uim/pixmaps/m17n*png
+%endif
 
 %if %{with mana}
 %files mana
@@ -597,10 +706,3 @@ fi
 %{_datadir}/uim/skk*.scm
 %{_datadir}/uim/pixmaps/skk*.png
 %{_datadir}/uim/pixmaps/skk*.svg
-
-%files m17n
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/uim-m17nlib-relink-icons
-%attr(755,root,root) %{_libdir}/uim/plugin/libuim-m17nlib.so
-%{_datadir}/uim/m17nlib.scm
-%{_datadir}/uim/pixmaps/m17n*png
