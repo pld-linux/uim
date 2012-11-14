@@ -1,3 +1,10 @@
+#
+# Conditional build:
+%bcond_without	eb	# EB support
+%bcond_without	gnome	# GNOME panel applet
+%bcond_without	kde	# KDE panel applet
+%bcond_without	mana	# mana support
+#
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
@@ -5,6 +12,7 @@ Version:	1.8.3
 Release:	1
 License:	GPL or BSD
 Group:		Libraries
+#Source0Download: http://code.google.com/p/uim/downloads/list
 Source0:	http://uim.googlecode.com/files/%{name}-%{version}.tar.bz2
 # Source0-md5:	918ce698765ea25b402a110b86b4d23c
 Source1:	%{name}.xinputd
@@ -12,27 +20,27 @@ Source2:	%{name}-init.el
 Patch0:		%{name}-emacs-utf8.patch
 URL:		http://uim.freedesktop.org/
 BuildRequires:	Canna-devel
-BuildRequires:	Qt3Support-devel
+#?BuildRequires:	Qt3Support-devel
 BuildRequires:	anthy-devel >= 9100h-2
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	automoc4
+%{?with_kde:BuildRequires:	automoc4}
 BuildRequires:	cmake
 BuildRequires:	curl-devel
-BuildRequires:	eb-devel
+%{?with_eb:BuildRequires:	eb-devel}
 BuildRequires:	expat-devel
-BuildRequires:	gcc-objc
-BuildRequires:	gnome-panel-devel
+#?BuildRequires:	gcc-objc
+%{?with_gnome:BuildRequires:	gnome-panel-devel}
 BuildRequires:	gtk+2-devel >= 2:2.2.0
 BuildRequires:	gtk+3-devel
-BuildRequires:	kde4-kdelibs-devel
+%{?with_kde:BuildRequires:	kde4-kdelibs-devel}
 BuildRequires:	libedit-devel
 BuildRequires:	libffi-devel
 BuildRequires:	libgcroots-devel
-BuildRequires:	libgnome-devel >= 2.4.0
+%{?with_gnome:BuildRequires:	libgnome-devel >= 2.4.0}
 BuildRequires:	libtool
 BuildRequires:	m17n-lib-devel
-BuildRequires:	mana
+%{?with_mana:BuildRequires:	mana}
 BuildRequires:	openssl-devel
 BuildRequires:	qt-devel
 BuildRequires:	qt4-qmake
@@ -254,42 +262,46 @@ cp -a fep/README.key fep/README.fep.key
 cp -a xim/README xim/README.xim
 
 %build
+#{__libtoolize}
+#{__aclocal} -I m4
+#{__autoconf}
+#{__automake}
 %configure \
-	--with-libgcroots=installed \
-	--enable-openssl \
-	--disable-gnome2-applet \
-	--enable-gnome3-applet \
-	--enable-qt4-qt3support \
 	--enable-default-toolkit=gtk3 \
-	--with-lispdir=%{_datadir}/emacs/site-lisp \
 	--enable-dict \
-	--enable-pref \
+	--disable-gnome2-applet \
+	%{?with_gnome:--enable-gnome3-applet} \
+	%{?with_kde:--enable-kde4-applet} \
 	--enable-notify=libnotify \
-	--without-scim \
+	--enable-openssl \
+	--enable-pref \
+	--enable-qt4-qt3support \
 	--without-anthy \
 	--with-anthy-utf8 \
 	--with-canna \
-	--with-m17nlib \
-	--with-mana \
-	--with-prime \
-	--without-sj3 \
-	--without-skk \
 	--with-curl \
+	%{?with_eb:--with-eb} \
 	--with-expat \
-	--with-ssl-engine \
-	--with-sqlite3 \
 	--with-ffi \
-	--with-x \
-	--with-xft \
 	--with-gtk2 \
 	--with-gtk3 \
+	--with-libedit \
+	--with-libgcroots=installed \
+	--with-lispdir=%{_datadir}/emacs/site-lisp \
+	--with-m17nlib \
+	%{?with_mana:--with-mana} \
+	--with-prime \
 	--with-qt \
 	--with-qt-immodule \
 	--with-qt4 \
 	--with-qt4-immodule \
-	--enable-kde4-applet \
-	--with-libedit \
-	--with-eb
+	--without-scim \
+	--without-sj3 \
+	--without-skk \
+	--with-sqlite3 \
+	--with-ssl-engine \
+	--with-x \
+	--with-xft
 
 %{__make} -j1
 
@@ -343,8 +355,8 @@ $RPM_BUILD_ROOT%{_bindir}/uim-module-manager \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %post gtk2
 %if "%{_lib}" != "lib"
@@ -442,7 +454,7 @@ fi
 %dir %{_libdir}/uim/plugin
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-curl.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-custom-enabler.so
-%attr(755,root,root) %{_libdir}/uim/plugin/libuim-eb.so
+%{?with_eb:%attr(755,root,root) %{_libdir}/uim/plugin/libuim-eb.so}
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-editline.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-expat.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-ffi.so
@@ -505,11 +517,13 @@ fi
 %attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk3
 %attr(755,root,root) %{_libdir}/uim-candwin-horizontal-gtk3
 
+%if %{with gnome}
 %files gnome
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/uim-toolbar-applet-gnome3
 %{_datadir}/dbus-1/services/org.gnome.panel.applet.UimAppletFactory.service
 %{_datadir}/gnome-panel/4.0/applets/UimApplet.panel-applet
+%endif
 
 %files qt
 %defattr(644,root,root,755)
@@ -529,10 +543,12 @@ fi
 %attr(755,root,root) %{_libdir}/uim-candwin-qt
 %attr(755,root,root) %{_libdir}/qt/plugins-mt/inputmethods/*.so
 
+%if %{with kde}
 %files kde
 %defattr(644,root,root,755)
-%{_libdir}/kde4/plasma_applet_uim.so
+%attr(755,root,root) %{_libdir}/kde4/plasma_applet_uim.so
 %{_datadir}/kde4/services/plasma-applet-uim.desktop
+%endif
 
 %files -n emacs-uim
 %defattr(644,root,root,755)
@@ -562,11 +578,13 @@ fi
 %{_datadir}/uim/canna*.scm
 %{_datadir}/uim/pixmaps/canna.png
 
+%if %{with mana}
 %files mana
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-mana.so
 %{_datadir}/uim/mana*.scm
 %{_datadir}/uim/pixmaps/mana.png
+%endif
 
 %files prime
 %defattr(644,root,root,755)
