@@ -1,17 +1,16 @@
-# TODO: --with-sj3, no --without-skk
 #
 # Conditional build:
 %bcond_without	gnome	# GNOME panel applet
 %bcond_without	kde	# KDE panel applet
 %bcond_without	qt3	# Qt 3 support / immodule
 %bcond_without	qt4	# Qt 4 support / immodule
-%bcond_without	anthy	# Anthy IM support
-%bcond_without	canna	# Canna IM support
-%bcond_without	eb	# EB IM support
+%bcond_without	anthy	# Anthy IM and dictionary support
+%bcond_without	canna	# Canna IM and dictionary support
+%bcond_without	eb	# EB text search support
 %bcond_without	m17n	# m17n IM support
 %bcond_without	mana	# mana IM support
-%bcond_with	wnn	# Wnn IM support
 %bcond_with	scim	# scim support [broken]
+%bcond_with	wnn	# Wnn IM support
 #
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
@@ -31,8 +30,8 @@ URL:		http://uim.freedesktop.org/
 %{?with_wnn:BuildRequires:	FreeWnn-devel}
 %{?with_qt4:BuildRequires:	Qt3Support-devel >= 4}
 %{?with_anthy:BuildRequires:	anthy-devel >= 9100h-2}
-BuildRequires:	autoconf >= 2.60b
-BuildRequires:	automake >= 1:1.10
+#BuildRequires:	autoconf >= 2.60b
+#BuildRequires:	automake >= 1:1.10
 %{?with_kde:BuildRequires:	automoc4}
 %{?with_kde:BuildRequires:	cmake}
 BuildRequires:	curl-devel >= 7.16.4
@@ -50,7 +49,7 @@ BuildRequires:	libgcroots-devel >= 0.2.3
 %{?with_gnome:BuildRequires:	libgnome-devel >= 2.4.0}
 BuildRequires:	libnotify-devel >= 0.4
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool >= 2:1.5
+#BuildRequires:	libtool >= 2:1.5
 %{?with_m17n:BuildRequires:	m17n-lib-devel >= 1.3.1}
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
@@ -61,14 +60,11 @@ BuildRequires:	pkgconfig(libffi) >= 3.0.0
 %{?with_scim:BuildRequires:	scim-devel >= 1.3.0}
 BuildRequires:	sqlite3-devel >= 3.0.0
 BuildRequires:	xorg-lib-libX11-devel
-BuildRequires:	xorg-lib-libXau-devel
-BuildRequires:	xorg-lib-libXdmcp-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXft-devel
-BuildRequires:	xorg-lib-libXrender-devel
-BuildRequires:	xorg-lib-libXt-devel
-Requires:	curl-libs >= 7.16.4
 Requires:	libgcroots >= 0.2.3
+# for libuim-curl
+Requires:	curl-libs >= 7.16.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -301,6 +297,21 @@ This package provides support for Canna, a Japanese input method.
 Ten pakiet zawiera obsługę metody Canna wprowadzania znaków
 japońskich.
 
+%package eb
+Summary:	EB search support for Uim
+Summary(pl.UTF-8):	Obsługa wyszukiwania EB w Uimie
+Group:		Libraries
+Requires(post,postun):	%{_bindir}/uim-module-manager
+Requires:	%{name} = %{version}-%{release}
+
+%description eb
+This package provides support for searching text in books in EB
+format.
+
+%description eb -l pl.UTF-8
+Ten pakiet zawiera obsługę wyszukiwania tekstu w książkach w formacie
+EB.
+
 %package m17n
 Summary:	m17n-lib support for Uim
 Summary(pl.UTF-8):	Obsługa m17n-lib w Uimie
@@ -348,6 +359,34 @@ This package provides support for PRIME, a Japanese input method.
 Ten pakiet zawiera obsługę metody PRIME wprowadzania znaków
 japońskich.
 
+%package scim
+Summary:	SCIM support for Uim
+Summary(pl.UTF-8):	Obsługa metod SCIM w Uimie
+Group:		Libraries
+Requires(post,postun):	%{_bindir}/uim-module-manager
+Requires:	%{name} = %{version}-%{release}
+Requires:	scim >= 1.3.0
+
+%description scim
+This package provides support for SCIM-provided input methods.
+
+%description scim -l pl.UTF-8
+Ten pakiet zawiera obsługę metod udostępnianych przez SCIM.
+
+%package sj3
+Summary:	SJ3 support for Uim
+Summary(pl.UTF-8):	Obsługa metody SJ3 w Uimie
+Group:		Libraries
+Requires(post,postun):	%{_bindir}/uim-module-manager
+Requires:	%{name} = %{version}-%{release}
+
+%description sj3
+This package provides support for SJ3, a Japanese input method.
+
+%description sj3 -l pl.UTF-8
+Ten pakiet zawiera obsługę metody SJ3 wprowadzania znaków
+japońskich.
+
 %package skk
 Summary:	SKK support for Uim
 Summary(pl.UTF-8):	Obsługa metody SKK w Uimie
@@ -363,6 +402,20 @@ This package provides support for SKK, a Japanese input method.
 Ten pakiet zawiera obsługę metody SKK wprowadzania znaków
 japońskich.
 
+%package wnn
+Summary:	Wnn support for Uim
+Summary(pl.UTF-8):	Obsługa metody Wnn w Uimie
+Group:		Libraries
+Requires(post,postun):	%{_bindir}/uim-module-manager
+Requires:	%{name} = %{version}-%{release}
+
+%description wnn
+This package provides support for Wnn, a Japanese input method.
+
+%description wnn -l pl.UTF-8
+Ten pakiet zawiera obsługę metody Wnn wprowadzania znaków
+japońskich.
+
 %prep
 %setup -q
 %patch0 -p1
@@ -373,10 +426,6 @@ cp -a fep/README.key fep/README.fep.key
 cp -a xim/README xim/README.xim
 
 %build
-#{__libtoolize}
-#{__aclocal} -I m4
-#{__autoconf}
-#{__automake}
 %configure \
 	MANA=/usr/bin/mana \
 	--enable-default-toolkit=gtk3 \
@@ -406,8 +455,8 @@ cp -a xim/README xim/README.xim
 	%{?with_qt3:--with-qt --with-qt-immodule} \
 	%{?with_qt4:--with-qt4 --with-qt4-immodule} \
 	%{?with_scim:--with-scim} \
-	--without-sj3 \
-	--without-skk \
+	--with-sj3 \
+	--with-skk \
 	--with-sqlite3 \
 	--with-ssl-engine \
 	%{?with_wnn:--with-wnn} \
@@ -441,6 +490,9 @@ mv $RPM_BUILD_ROOT%{_datadir}/uim/{installed-modules,loader}.scm $RPM_BUILD_ROOT
 ln -sf %{_localstatedir}/lib/uim/installed-modules.scm $RPM_BUILD_ROOT%{_datadir}/uim/
 ln -sf %{_localstatedir}/lib/uim/loader.scm $RPM_BUILD_ROOT%{_datadir}/uim/
 
+# OSX-specific
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/uim/annotation-osx-dcs.scm
+
 # Register additional input methods
 LD_LIBRARY_PATH=$RPM_BUILD_ROOT%{_libdir} \
 LIBUIM_SYSTEM_SCM_FILES=$RPM_BUILD_ROOT%{_datadir}/uim/lib \
@@ -459,7 +511,7 @@ LIBUIM_PLUGIN_LIB_DIR=$RPM_BUILD_ROOT%{_libdir}/uim/plugin \
 UIM_DISABLE_NOTIFY=1 \
 $RPM_BUILD_ROOT%{_bindir}/uim-module-manager \
 		--path $RPM_BUILD_ROOT%{_localstatedir}/lib/uim \
-		--unregister anthy anthy-utf8 canna mana skk m17nlib
+		--unregister anthy-utf8 canna m17nlib mana prime scim sj3 skk wnn
 
 %find_lang %{name}
 
@@ -470,28 +522,28 @@ rm -rf $RPM_BUILD_ROOT
 %postun	-p /sbin/ldconfig
 
 %post gtk2
-%if "%{_lib}" != "lib"
+%if "%{_lib}" == "lib64"
 %{_bindir}/gtk-query-immodules-2.0-64 > %{_sysconfdir}/gtk64-2.0/gtk.immodules
 %else
 %{_bindir}/gtk-query-immodules-2.0 > %{_sysconfdir}/gtk-2.0/gtk.immodules
 %endif
 
 %postun gtk2
-%if "%{_lib}" != "lib"
+%if "%{_lib}" == "lib64"
 %{_bindir}/gtk-query-immodules-2.0-64 > %{_sysconfdir}/gtk64-2.0/gtk.immodules
 %else
 %{_bindir}/gtk-query-immodules-2.0 > %{_sysconfdir}/gtk-2.0/gtk.immodules
 %endif
 
 %post gtk3
-%if "%{_lib}" != "lib"
+%if "%{_lib}" == "lib64"
 %{_bindir}/gtk-query-immodules-3.0-64 --update-cache
 %else
 %{_bindir}/gtk-query-immodules-3.0 --update-cache
 %endif
 
 %postun gtk3
-%if "%{_lib}" != "lib"
+%if "%{_lib}" == "lib64"
 %{_bindir}/gtk-query-immodules-3.0-64 --update-cache
 %else
 %{_bindir}/gtk-query-immodules-3.0 --update-cache
@@ -537,12 +589,36 @@ if [ "$1" = "0" ]; then
 	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister prime
 fi
 
+%post scim
+%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register scim
+
+%postun scim
+if [ "$1" = "0" ]; then
+	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister scim
+fi
+
+%post sj3
+%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register sj3
+
+%postun sj3
+if [ "$1" = "0" ]; then
+	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister sj3
+fi
+
 %post skk
 %{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register skk
 
 %postun skk
 if [ "$1" = "0" ]; then
 	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister skk
+fi
+
+%post wnn
+%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --register wnn
+
+%postun wnn
+if [ "$1" = "0" ]; then
+	%{_bindir}/uim-module-manager --path %{_localstatedir}/lib/uim --unregister wnn
 fi
 
 %files -f %{name}.lang
@@ -556,16 +632,19 @@ fi
 %attr(755,root,root) %{_bindir}/uim-module-manager
 %attr(755,root,root) %{_bindir}/uim-sh
 %attr(755,root,root) %{_bindir}/uim-xim
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/lib*.so.[0-9]
+%attr(755,root,root) %{_libdir}/libuim.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libuim.so.8
+%attr(755,root,root) %{_libdir}/libuim-custom.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libuim-custom.so.2
+%attr(755,root,root) %{_libdir}/libuim-scm.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libuim-scm.so.0
 %attr(755,root,root) %{_libdir}/uim-helper-server
 %dir %{_libdir}/uim
 %dir %{_libdir}/uim/notify
-%attr(755,root,root) %{_libdir}/uim/notify/libuimnotify*.so
+%attr(755,root,root) %{_libdir}/uim/notify/libuimnotify-libnotify.so
 %dir %{_libdir}/uim/plugin
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-curl.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-custom-enabler.so
-%{?with_eb:%attr(755,root,root) %{_libdir}/uim/plugin/libuim-eb.so}
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-editline.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-expat.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-ffi.so
@@ -577,30 +656,49 @@ fi
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-socket.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-sqlite3.so
 %dir %{_datadir}/uim
-%{_datadir}/%{name}/*
-%exclude %{_datadir}/uim/anthy*.scm
-%exclude %{_datadir}/uim/canna*.scm
-%exclude %{_datadir}/uim/mana*.scm
-%exclude %{_datadir}/uim/prime*.scm
-%exclude %{_datadir}/uim/skk*.scm
-%exclude %{_datadir}/uim/m17nlib.scm
+%{_datadir}/uim/byeoru-data
+%{_datadir}/uim/helperdata
+%{_datadir}/uim/lib
+%{_datadir}/uim/pixmaps
+%{_datadir}/uim/tables
+%{_datadir}/uim/*.scm
+# NOTE: scm and pixmaps files are always installed, even if particular part is disabled by bcond
+# by using unconditional exclude we avoid packaging them if bcond is disabled
 %exclude %{_datadir}/uim/pixmaps/anthy*.png
 %exclude %{_datadir}/uim/pixmaps/canna.png
+%exclude %{_datadir}/uim/pixmaps/m17n*png
 %exclude %{_datadir}/uim/pixmaps/mana.png
-%exclude %{_datadir}/uim/pixmaps/prime.png
+%exclude %{_datadir}/uim/pixmaps/mana.svg
+%exclude %{_datadir}/uim/pixmaps/prime*.png
+%exclude %{_datadir}/uim/pixmaps/scim.png
+%exclude %{_datadir}/uim/pixmaps/scim.svg
+%exclude %{_datadir}/uim/pixmaps/sj3.png
+%exclude %{_datadir}/uim/pixmaps/sj3.svg
 %exclude %{_datadir}/uim/pixmaps/skk*.png
 %exclude %{_datadir}/uim/pixmaps/skk*.svg
-%exclude %{_datadir}/uim/pixmaps/m17n*png
+%exclude %{_datadir}/uim/pixmaps/wnn.png
+%exclude %{_datadir}/uim/pixmaps/wnn.svg
+%exclude %{_datadir}/uim/anthy*.scm
+%exclude %{_datadir}/uim/canna*.scm
+%exclude %{_datadir}/uim/m17nlib*.scm
+%exclude %{_datadir}/uim/mana*.scm
+%exclude %{_datadir}/uim/prime*.scm
+%exclude %{_datadir}/uim/scim.scm
+%exclude %{_datadir}/uim/skk*.scm
+%exclude %{_datadir}/uim/wnn*.scm
 %{_desktopdir}/uim.desktop
-%{_mandir}/man1/*.1*
+%{_mandir}/man1/uim-xim.1*
 %dir %{_localstatedir}/lib/uim
-%verify(not md5 mtime size) %{_localstatedir}/lib/uim/*.scm
+%verify(not md5 mtime size) %{_localstatedir}/lib/uim/installed-modules.scm
+%verify(not md5 mtime size) %{_localstatedir}/lib/uim/loader.scm
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*.so
+%attr(755,root,root) %{_libdir}/libuim.so
+%attr(755,root,root) %{_libdir}/libuim-custom.so
+%attr(755,root,root) %{_libdir}/libuim-scm.so
 %{_includedir}/%{name}
-%{_pkgconfigdir}/*.pc
+%{_pkgconfigdir}/uim.pc
 
 %files gtk2
 %defattr(644,root,root,755)
@@ -610,7 +708,7 @@ fi
 %attr(755,root,root) %{_bindir}/uim-pref-gtk
 %attr(755,root,root) %{_bindir}/uim-toolbar-gtk
 %attr(755,root,root) %{_bindir}/uim-toolbar-gtk-systray
-%attr(755,root,root) %{_libdir}/gtk-2.0/*/immodules/*.so
+%attr(755,root,root) %{_libdir}/gtk-2.0/*/immodules/im-uim.so
 %attr(755,root,root) %{_libdir}/uim-candwin-gtk
 %attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk
 %attr(755,root,root) %{_libdir}/uim-candwin-horizontal-gtk
@@ -623,7 +721,7 @@ fi
 %attr(755,root,root) %{_bindir}/uim-pref-gtk3
 %attr(755,root,root) %{_bindir}/uim-toolbar-gtk3
 %attr(755,root,root) %{_bindir}/uim-toolbar-gtk3-systray
-%attr(755,root,root) %{_libdir}/gtk-3.0/*/immodules/*.so
+%attr(755,root,root) %{_libdir}/gtk-3.0/*/immodules/im-uim.so
 %attr(755,root,root) %{_libdir}/uim-candwin-gtk3
 %attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk3
 %attr(755,root,root) %{_libdir}/uim-candwin-horizontal-gtk3
@@ -644,7 +742,7 @@ fi
 %attr(755,root,root) %{_bindir}/uim-pref-qt
 %attr(755,root,root) %{_bindir}/uim-toolbar-qt
 %attr(755,root,root) %{_libdir}/uim-candwin-qt
-%attr(755,root,root) %{_libdir}/qt/plugins-mt/inputmethods/*.so
+%attr(755,root,root) %{_libdir}/qt/plugins-mt/inputmethods/libquiminputcontextplugin.so
 %endif
 
 %if %{with qt4}
@@ -654,7 +752,7 @@ fi
 %attr(755,root,root) %{_bindir}/uim-im-switcher-qt4
 %attr(755,root,root) %{_bindir}/uim-pref-qt4
 %attr(755,root,root) %{_bindir}/uim-toolbar-qt4
-%attr(755,root,root) %{_libdir}/qt4/plugins/inputmethods/*.so
+%attr(755,root,root) %{_libdir}/qt4/plugins/inputmethods/libuiminputcontextplugin.so
 %attr(755,root,root) %{_libdir}/uim-candwin-qt4
 %endif
 
@@ -685,7 +783,7 @@ fi
 %if %{with anthy}
 %files anthy
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/uim/plugin/libuim-anthy*.so
+%attr(755,root,root) %{_libdir}/uim/plugin/libuim-anthy-utf8.so
 %{_datadir}/uim/anthy*.scm
 %{_datadir}/uim/pixmaps/anthy*.png
 %endif
@@ -697,13 +795,20 @@ fi
 %{_datadir}/uim/pixmaps/canna.png
 %endif
 
+%if %{with eb}
+%files eb
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/uim/plugin/libuim-eb.so
+%{_datadir}/uim/annotation-eb.scm
+%endif
+
 %if %{with m17n}
 %files m17n
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/uim-m17nlib-relink-icons
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-m17nlib.so
-%{_datadir}/uim/m17nlib.scm
-%{_datadir}/uim/pixmaps/m17n*png
+%{_datadir}/uim/m17nlib*.scm
+%{_datadir}/uim/pixmaps/m17n*.png
 %endif
 
 %if %{with mana}
@@ -712,16 +817,41 @@ fi
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-mana.so
 %{_datadir}/uim/mana*.scm
 %{_datadir}/uim/pixmaps/mana.png
+%{_datadir}/uim/pixmaps/mana.svg
 %endif
 
 %files prime
 %defattr(644,root,root,755)
 %{_datadir}/uim/prime*.scm
-%{_datadir}/uim/pixmaps/prime.png
+%{_datadir}/uim/pixmaps/prime*.png
+
+%if %{with scim}
+%files scim
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/uim/plugin/libuim-scim.so
+%{_datadir}/uim/scim.scm
+%{_datadir}/uim/pixmaps/scim.png
+%{_datadir}/uim/pixmaps/scim.svg
+%endif
+
+%files sj3
+%defattr(644,root,root,755)
+%{_datadir}/uim/sj3*.scm
+%{_datadir}/uim/pixmaps/sj3.png
+%{_datadir}/uim/pixmaps/sj3.svg
 
 %files skk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-skk.so
 %{_datadir}/uim/skk*.scm
-%{_datadir}/uim/pixmaps/skk*.png
-%{_datadir}/uim/pixmaps/skk*.svg
+%{_datadir}/uim/pixmaps/skk.png
+%{_datadir}/uim/pixmaps/skk.svg
+
+%if %{with wnn}
+%files wnn
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/uim/plugin/libuim-wnn.so
+%{_datadir}/uim/wnn*.scm
+%{_datadir}/uim/pixmaps/wnn.png
+%{_datadir}/uim/pixmaps/wnn.svg
+%endif
