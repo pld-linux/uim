@@ -1,12 +1,17 @@
+# TODO: --with-sj3, no --without-skk
 #
 # Conditional build:
 %bcond_without	gnome	# GNOME panel applet
 %bcond_without	kde	# KDE panel applet
+%bcond_without	qt3	# Qt 3 support / immodule
+%bcond_without	qt4	# Qt 4 support / immodule
 %bcond_without	anthy	# Anthy IM support
 %bcond_without	canna	# Canna IM support
 %bcond_without	eb	# EB IM support
 %bcond_without	m17n	# m17n IM support
 %bcond_without	mana	# mana IM support
+%bcond_with	wnn	# Wnn IM support
+%bcond_with	scim	# scim support [broken]
 #
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
@@ -23,31 +28,38 @@ Source2:	%{name}-init.el
 Patch0:		%{name}-emacs-utf8.patch
 URL:		http://uim.freedesktop.org/
 %{?with_canna:BuildRequires:	Canna-devel}
-#?BuildRequires:	Qt3Support-devel
+%{?with_wnn:BuildRequires:	FreeWnn-devel}
+%{?with_qt4:BuildRequires:	Qt3Support-devel >= 4}
 %{?with_anthy:BuildRequires:	anthy-devel >= 9100h-2}
-BuildRequires:	autoconf
-BuildRequires:	automake
+BuildRequires:	autoconf >= 2.60b
+BuildRequires:	automake >= 1:1.10
 %{?with_kde:BuildRequires:	automoc4}
-BuildRequires:	cmake
-BuildRequires:	curl-devel
+%{?with_kde:BuildRequires:	cmake}
+BuildRequires:	curl-devel >= 7.16.4
 %{?with_eb:BuildRequires:	eb-devel}
-BuildRequires:	expat-devel
-#?BuildRequires:	gcc-objc
-%{?with_gnome:BuildRequires:	gnome-panel-devel}
-BuildRequires:	gtk+2-devel >= 2:2.2.0
-BuildRequires:	gtk+3-devel
+BuildRequires:	expat-devel >= 1.95
+BuildRequires:	gettext-devel >= 0.17
+%{?with_gnome:BuildRequires:	gnome-panel-devel >= 3}
+BuildRequires:	gtk+2-devel >= 2:2.4.0
+BuildRequires:	gtk+3-devel >= 3.0
+BuildRequires:	intltool >= 0.36.3
 %{?with_kde:BuildRequires:	kde4-kdelibs-devel}
 BuildRequires:	libedit-devel
-BuildRequires:	libffi-devel
-BuildRequires:	libgcroots-devel
+BuildRequires:	libffi-devel >= 3.0.0
+BuildRequires:	libgcroots-devel >= 0.2.3
 %{?with_gnome:BuildRequires:	libgnome-devel >= 2.4.0}
-BuildRequires:	libtool
-%{?with_m17n:BuildRequires:	m17n-lib-devel}
-%{?with_mana:BuildRequires:	mana}
+BuildRequires:	libnotify-devel >= 0.4
+BuildRequires:	libstdc++-devel
+BuildRequires:	libtool >= 2:1.5
+%{?with_m17n:BuildRequires:	m17n-lib-devel >= 1.3.1}
+BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
-BuildRequires:	qt-devel >= 3
-BuildRequires:	qt4-qmake
-BuildRequires:	sqlite3-devel
+BuildRequires:	pkgconfig
+BuildRequires:	pkgconfig(libffi) >= 3.0.0
+%{?with_qt3:BuildRequires:	qt-devel >= 3.2.0}
+%{?with_qt4:BuildRequires:	qt4-qmake >= 4}
+%{?with_scim:BuildRequires:	scim-devel >= 1.3.0}
+BuildRequires:	sqlite3-devel >= 3.0.0
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXau-devel
 BuildRequires:	xorg-lib-libXdmcp-devel
@@ -55,8 +67,8 @@ BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXft-devel
 BuildRequires:	xorg-lib-libXrender-devel
 BuildRequires:	xorg-lib-libXt-devel
-Requires(post,postun):	/sbin/ldconfig
-Requires(post,postun):	gtk+2
+Requires:	curl-libs >= 7.16.4
+Requires:	libgcroots >= 0.2.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -105,6 +117,7 @@ Group:		X11/Applications
 Requires:	%{name} = %{version}-%{release}
 # for update-gtk-immodules
 Requires(post,postun):	gtk+2 >= 2:2.9.1-2
+Requires:	gtk+2 >= 2:2.4.0
 
 %description gtk2
 Uim is a multilingual input method library. Uim aims to provide secure
@@ -185,6 +198,7 @@ Summary:	Qt 4 support for Uim
 Summary(pl.UTF-8):	Obsługa Qt 4 dla biblioteki Uim
 Group:		X11/Applications
 Requires:	%{name} = %{version}-%{release}
+Requires:	qt >= 6:3.2.0
 
 %description qt
 Uim is a multilingual input method library. Uim aims to provide secure
@@ -293,6 +307,7 @@ Summary(pl.UTF-8):	Obsługa m17n-lib w Uimie
 Group:		Libraries
 Requires(post,postun):	%{_bindir}/uim-module-manager
 Requires:	%{name} = %{version}-%{release}
+Requires:	m17n-lib >= 1.3.1
 
 %description m17n
 This package provides support for m17n-lib, which allows input of many
@@ -324,7 +339,7 @@ Summary(pl.UTF-8):	Obsługa metody PRIME w Uimie
 Group:		Libraries
 Requires(post,postun):	%{_bindir}/uim-module-manager
 Requires:	%{name} = %{version}-%{release}
-Requires:	prime
+Requires:	prime >= 0.8.5.2
 
 %description prime
 This package provides support for PRIME, a Japanese input method.
@@ -363,6 +378,7 @@ cp -a xim/README xim/README.xim
 #{__autoconf}
 #{__automake}
 %configure \
+	MANA=/usr/bin/mana \
 	--enable-default-toolkit=gtk3 \
 	--enable-dict \
 	--disable-gnome2-applet \
@@ -371,7 +387,7 @@ cp -a xim/README xim/README.xim
 	--enable-notify=libnotify \
 	--enable-openssl \
 	--enable-pref \
-	--enable-qt4-qt3support \
+	%{?with_qt4:--enable-qt4-qt3support} \
 	--without-anthy \
 	%{?with_anthy:--with-anthy-utf8} \
 	%{?with_canna:--with-canna} \
@@ -384,18 +400,17 @@ cp -a xim/README xim/README.xim
 	--with-libedit \
 	--with-libgcroots=installed \
 	--with-lispdir=%{_datadir}/emacs/site-lisp \
-	%{?with_m17n:--with-m17nlib} \
+	%{!?with_m17n:--without-m17nlib} \
 	%{?with_mana:--with-mana} \
 	--with-prime \
-	--with-qt \
-	--with-qt-immodule \
-	--with-qt4 \
-	--with-qt4-immodule \
-	--without-scim \
+	%{?with_qt3:--with-qt --with-qt-immodule} \
+	%{?with_qt4:--with-qt4 --with-qt4-immodule} \
+	%{?with_scim:--with-scim} \
 	--without-sj3 \
 	--without-skk \
 	--with-sqlite3 \
 	--with-ssl-engine \
+	%{?with_wnn:--with-wnn} \
 	--with-x \
 	--with-xft
 
@@ -621,6 +636,7 @@ fi
 %{_datadir}/gnome-panel/4.0/applets/UimApplet.panel-applet
 %endif
 
+%if %{with qt3}
 %files qt3
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/uim-chardict-qt
@@ -629,14 +645,9 @@ fi
 %attr(755,root,root) %{_bindir}/uim-toolbar-qt
 %attr(755,root,root) %{_libdir}/uim-candwin-qt
 %attr(755,root,root) %{_libdir}/qt/plugins-mt/inputmethods/*.so
-
-%if %{with kde}
-%files kde
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/kde4/plasma_applet_uim.so
-%{_datadir}/kde4/services/plasma-applet-uim.desktop
 %endif
 
+%if %{with qt4}
 %files qt
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/uim-chardict-qt4
@@ -645,6 +656,14 @@ fi
 %attr(755,root,root) %{_bindir}/uim-toolbar-qt4
 %attr(755,root,root) %{_libdir}/qt4/plugins/inputmethods/*.so
 %attr(755,root,root) %{_libdir}/uim-candwin-qt4
+%endif
+
+%if %{with kde}
+%files kde
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/kde4/plasma_applet_uim.so
+%{_datadir}/kde4/services/plasma-applet-uim.desktop
+%endif
 
 %files -n emacs-common-uim
 %defattr(644,root,root,755)
