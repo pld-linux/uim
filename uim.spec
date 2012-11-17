@@ -9,8 +9,8 @@
 %bcond_without	eb	# EB text search support
 %bcond_without	m17n	# m17n IM support
 %bcond_without	mana	# mana IM support
-%bcond_with	scim	# scim support [broken]
-%bcond_with	wnn	# Wnn IM support
+%bcond_with	scim	# scim support [broken acc. to configure]
+%bcond_without	wnn	# Wnn IM support
 #
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
@@ -459,7 +459,7 @@ cp -a xim/README xim/README.xim
 	--with-skk \
 	--with-sqlite3 \
 	--with-ssl-engine \
-	%{?with_wnn:--with-wnn} \
+	%{?with_wnn:--with-wnn --with-wnn-includes=/usr/include/wnn} \
 	--with-x \
 	--with-xft
 
