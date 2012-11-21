@@ -678,12 +678,14 @@ fi
 %exclude %{_datadir}/uim/pixmaps/skk*.svg
 %exclude %{_datadir}/uim/pixmaps/wnn.png
 %exclude %{_datadir}/uim/pixmaps/wnn.svg
+%exclude %{_datadir}/uim/annotation-eb.scm
 %exclude %{_datadir}/uim/anthy*.scm
 %exclude %{_datadir}/uim/canna*.scm
 %exclude %{_datadir}/uim/m17nlib*.scm
 %exclude %{_datadir}/uim/mana*.scm
 %exclude %{_datadir}/uim/prime*.scm
 %exclude %{_datadir}/uim/scim.scm
+%exclude %{_datadir}/uim/sj3*.scm
 %exclude %{_datadir}/uim/skk*.scm
 %exclude %{_datadir}/uim/wnn*.scm
 %{_desktopdir}/uim.desktop
