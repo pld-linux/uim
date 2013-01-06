@@ -15,13 +15,13 @@
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
-Version:	1.8.3
-Release:	3
+Version:	1.8.4
+Release:	1
 License:	GPL or BSD
 Group:		Libraries
 #Source0Download: http://code.google.com/p/uim/downloads/list
 Source0:	http://uim.googlecode.com/files/%{name}-%{version}.tar.bz2
-# Source0-md5:	918ce698765ea25b402a110b86b4d23c
+# Source0-md5:	5174e6ee798da0be6fa922c87bd3f85a
 Source1:	%{name}.xinputd
 Source2:	%{name}-init.el
 Patch0:		%{name}-emacs-utf8.patch
