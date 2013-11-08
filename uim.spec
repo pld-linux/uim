@@ -2,7 +2,7 @@
 # Conditional build:
 %bcond_without	gnome	# GNOME panel applet
 %bcond_without	kde	# KDE panel applet
-%bcond_without	qt3	# Qt 3 support / immodule
+%bcond_with	qt3	# Qt 3 support / immodule
 %bcond_without	qt4	# Qt 4 support / immodule
 %bcond_without	anthy	# Anthy IM and dictionary support
 %bcond_without	canna	# Canna IM and dictionary support
@@ -15,13 +15,13 @@
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
-Version:	1.8.4
-Release:	2
+Version:	1.8.6
+Release:	1
 License:	GPL or BSD
 Group:		Libraries
 #Source0Download: http://code.google.com/p/uim/downloads/list
 Source0:	http://uim.googlecode.com/files/%{name}-%{version}.tar.bz2
-# Source0-md5:	5174e6ee798da0be6fa922c87bd3f85a
+# Source0-md5:	ecea4c597bab1fd4ba98ea84edcece59
 Source1:	%{name}.xinputd
 Source2:	%{name}-init.el
 Patch0:		%{name}-emacs-utf8.patch
@@ -480,7 +480,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d \
 	DESTDIR=$RPM_BUILD_ROOT \
 	UIMEL_LISP_DIR=%{_datadir}/xemacs-packages/lisp/uim-el
 
-%{__rm} $RPM_BUILD_ROOT%{_libdir}{,/gtk*/*/immodules,/uim/*,/qt/plugins-mt/*}/*.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}{,/gtk*/*/immodules,/uim/*%{?with_qt:,/qt/plugins-mt/*}}/*.la
 
 %{__sed} -e 's|@@LIB@@|%{_lib}|g' %{SOURCE1} >$RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d/uim.conf
 install -p %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/site-start.d/
