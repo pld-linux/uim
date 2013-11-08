@@ -480,7 +480,7 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d \
 	DESTDIR=$RPM_BUILD_ROOT \
 	UIMEL_LISP_DIR=%{_datadir}/xemacs-packages/lisp/uim-el
 
-%{__rm} $RPM_BUILD_ROOT%{_libdir}{,/gtk*/*/immodules,/uim/*%{?with_qt:,/qt/plugins-mt/*}}/*.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}{,/gtk*/*/immodules,/uim/*%{?with_qt3:,/qt/plugins-mt/*}}/*.la
 
 %{__sed} -e 's|@@LIB@@|%{_lib}|g' %{SOURCE1} >$RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d/uim.conf
 install -p %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/site-start.d/
@@ -846,8 +846,8 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-skk.so
 %{_datadir}/uim/skk*.scm
-%{_datadir}/uim/pixmaps/skk.png
-%{_datadir}/uim/pixmaps/skk.svg
+%{_datadir}/uim/pixmaps/skk*.png
+%{_datadir}/uim/pixmaps/skk*.svg
 
 %if %{with wnn}
 %files wnn
