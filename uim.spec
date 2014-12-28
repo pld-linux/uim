@@ -37,7 +37,7 @@ URL:		http://uim.freedesktop.org/
 BuildRequires:	curl-devel >= 7.16.4
 %{?with_eb:BuildRequires:	eb-devel}
 BuildRequires:	expat-devel >= 1.95
-BuildRequires:	gettext-devel >= 0.17
+BuildRequires:	gettext-tools >= 0.17
 %{?with_gnome:BuildRequires:	gnome-panel-devel >= 3}
 BuildRequires:	gtk+2-devel >= 2:2.4.0
 BuildRequires:	gtk+3-devel >= 3.0
