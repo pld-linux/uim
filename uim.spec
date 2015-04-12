@@ -16,7 +16,7 @@ Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
 Version:	1.8.6
-Release:	2
+Release:	3
 License:	GPL or BSD
 Group:		Libraries
 #Source0Download: http://code.google.com/p/uim/downloads/list
@@ -25,6 +25,7 @@ Source0:	http://uim.googlecode.com/files/%{name}-%{version}.tar.bz2
 Source1:	%{name}.xinputd
 Source2:	%{name}-init.el
 Patch0:		%{name}-emacs-utf8.patch
+Patch1:		gnome-panel-3.16.patch
 URL:		http://uim.freedesktop.org/
 %{?with_canna:BuildRequires:	Canna-devel}
 %{?with_wnn:BuildRequires:	FreeWnn-devel}
@@ -419,6 +420,7 @@ japońskich.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 cp -a fep/README fep/README.fep
 cp -a fep/README.ja fep/README.fep.ja
@@ -426,6 +428,13 @@ cp -a fep/README.key fep/README.fep.key
 cp -a xim/README xim/README.xim
 
 %build
+%{__gettextize}
+%{__intltoolize}
+%{__libtoolize}
+%{__aclocal} -I m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
 	MANA=/usr/bin/mana \
 	--enable-default-toolkit=gtk3 \
@@ -733,7 +742,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/uim-toolbar-applet-gnome3
 %{_datadir}/dbus-1/services/org.gnome.panel.applet.UimAppletFactory.service
-%{_datadir}/gnome-panel/4.0/applets/UimApplet.panel-applet
+%{_datadir}/gnome-panel/5.0/applets/UimApplet.panel-applet
 %endif
 
 %if %{with qt3}
