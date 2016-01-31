@@ -19,14 +19,14 @@ Version:	1.8.6
 Release:	3
 License:	GPL or BSD
 Group:		Libraries
-#Source0Download: http://code.google.com/p/uim/downloads/list
-Source0:	http://uim.googlecode.com/files/%{name}-%{version}.tar.bz2
+#Source0Download: https://github.com/uim/uim/releases
+Source0:	https://github.com/uim/uim/releases/download/%{name}-%{version}/%{name}-%{version}.tar.bz2
 # Source0-md5:	ecea4c597bab1fd4ba98ea84edcece59
 Source1:	%{name}.xinputd
 Source2:	%{name}-init.el
 Patch0:		%{name}-emacs-utf8.patch
 Patch1:		gnome-panel-3.16.patch
-URL:		http://uim.freedesktop.org/
+URL:		https://github.com/uim/uim/wiki
 %{?with_canna:BuildRequires:	Canna-devel}
 %{?with_wnn:BuildRequires:	FreeWnn-devel}
 %{?with_qt4:BuildRequires:	Qt3Support-devel >= 4}
