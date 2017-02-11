@@ -9,14 +9,14 @@
 %bcond_without	eb	# EB text search support
 %bcond_without	m17n	# m17n IM support
 %bcond_without	mana	# mana IM support
-%bcond_with	scim	# scim support [broken acc. to configure]
+%bcond_with	scim	# scim support [broken, already removed in 1.9.0-git]
 %bcond_without	wnn	# Wnn IM support
 #
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
 Version:	1.8.6
-Release:	3
+Release:	4
 License:	GPL or BSD
 Group:		Libraries
 #Source0Download: https://github.com/uim/uim/releases
@@ -25,7 +25,7 @@ Source0:	https://github.com/uim/uim/releases/download/%{name}-%{version}/%{name}
 Source1:	%{name}.xinputd
 Source2:	%{name}-init.el
 Patch0:		%{name}-emacs-utf8.patch
-Patch1:		gnome-panel-3.16.patch
+Patch1:		%{name}-gtk+gnome-git.patch
 URL:		https://github.com/uim/uim/wiki
 %{?with_canna:BuildRequires:	Canna-devel}
 %{?with_wnn:BuildRequires:	FreeWnn-devel}
@@ -56,6 +56,8 @@ BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	pkgconfig(libffi) >= 3.0.0
+# since 1.9.0-git for PRIME support
+#BuildRequires:	prime >= 0.8.5.2
 %{?with_qt3:BuildRequires:	qt-devel >= 3.2.0}
 %{?with_qt4:BuildRequires:	qt4-qmake >= 4}
 %{?with_scim:BuildRequires:	scim-devel >= 1.3.0}
@@ -489,15 +491,19 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d \
 	DESTDIR=$RPM_BUILD_ROOT \
 	UIMEL_LISP_DIR=%{_datadir}/xemacs-packages/lisp/uim-el
 
-%{__rm} $RPM_BUILD_ROOT%{_libdir}{,/gtk*/*/immodules,/uim/*%{?with_qt3:,/qt/plugins-mt/*}}/*.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}{,/gtk*/*/immodules,/uim/*%{?with_gnome:,/uim}%{?with_qt3:,/qt/plugins-mt/*}}/*.la
 
 %{__sed} -e 's|@@LIB@@|%{_lib}|g' %{SOURCE1} >$RPM_BUILD_ROOT%{_sysconfdir}/X11/xinit/xinput.d/uim.conf
 install -p %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp/site-start.d/
 install -p %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/xemacs-packages/lisp/
 
-mv $RPM_BUILD_ROOT%{_datadir}/uim/{installed-modules,loader}.scm $RPM_BUILD_ROOT%{_localstatedir}/lib/uim/
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/uim/{installed-modules,loader}.scm $RPM_BUILD_ROOT%{_localstatedir}/lib/uim/
 ln -sf %{_localstatedir}/lib/uim/installed-modules.scm $RPM_BUILD_ROOT%{_datadir}/uim/
 ln -sf %{_localstatedir}/lib/uim/loader.scm $RPM_BUILD_ROOT%{_datadir}/uim/
+
+%if %{without scim}
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/uim/{scim.scm,pixmaps/scim.svg}
+%endif
 
 # OSX-specific
 %{__rm} $RPM_BUILD_ROOT%{_datadir}/uim/annotation-osx-dcs.scm
@@ -679,8 +685,10 @@ fi
 %exclude %{_datadir}/uim/pixmaps/mana.png
 %exclude %{_datadir}/uim/pixmaps/mana.svg
 %exclude %{_datadir}/uim/pixmaps/prime*.png
+%if %{with scim}
 %exclude %{_datadir}/uim/pixmaps/scim.png
 %exclude %{_datadir}/uim/pixmaps/scim.svg
+%endif
 %exclude %{_datadir}/uim/pixmaps/sj3.png
 %exclude %{_datadir}/uim/pixmaps/sj3.svg
 %exclude %{_datadir}/uim/pixmaps/skk*.png
@@ -693,7 +701,9 @@ fi
 %exclude %{_datadir}/uim/m17nlib*.scm
 %exclude %{_datadir}/uim/mana*.scm
 %exclude %{_datadir}/uim/prime*.scm
+%if %{with scim}
 %exclude %{_datadir}/uim/scim.scm
+%endif
 %exclude %{_datadir}/uim/sj3*.scm
 %exclude %{_datadir}/uim/skk*.scm
 %exclude %{_datadir}/uim/wnn*.scm
@@ -736,13 +746,14 @@ fi
 %attr(755,root,root) %{_libdir}/uim-candwin-gtk3
 %attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk3
 %attr(755,root,root) %{_libdir}/uim-candwin-horizontal-gtk3
+%dir %{_datadir}/uim/ui
+%{_datadir}/uim/ui/uim-applet-menu.xml
 
 %if %{with gnome}
 %files gnome
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/uim-toolbar-applet-gnome3
-%{_datadir}/dbus-1/services/org.gnome.panel.applet.UimAppletFactory.service
-%{_datadir}/gnome-panel/5.0/applets/UimApplet.panel-applet
+%attr(755,root,root) %{_libdir}/uim/libuim-toolbar-applet-gnome3.so
+%{_datadir}/gnome-panel/applets/UimApplet.panel-applet
 %endif
 
 %if %{with qt3}
