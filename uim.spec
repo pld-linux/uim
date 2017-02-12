@@ -31,8 +31,8 @@ URL:		https://github.com/uim/uim/wiki
 %{?with_wnn:BuildRequires:	FreeWnn-devel}
 %{?with_qt4:BuildRequires:	Qt3Support-devel >= 4}
 %{?with_anthy:BuildRequires:	anthy-devel >= 9100h-2}
-#BuildRequires:	autoconf >= 2.60b
-#BuildRequires:	automake >= 1:1.10
+BuildRequires:	autoconf >= 2.60b
+BuildRequires:	automake >= 1:1.10
 %{?with_kde:BuildRequires:	automoc4}
 %{?with_kde:BuildRequires:	cmake}
 BuildRequires:	curl-devel >= 7.16.4
@@ -50,7 +50,7 @@ BuildRequires:	libgcroots-devel >= 0.2.3
 %{?with_gnome:BuildRequires:	libgnome-devel >= 2.4.0}
 BuildRequires:	libnotify-devel >= 0.4
 BuildRequires:	libstdc++-devel
-#BuildRequires:	libtool >= 2:1.5
+BuildRequires:	libtool >= 2:1.5
 %{?with_m17n:BuildRequires:	m17n-lib-devel >= 1.3.1}
 BuildRequires:	ncurses-devel
 BuildRequires:	openssl-devel
@@ -69,6 +69,13 @@ Requires:	libgcroots >= 0.2.3
 # for libuim-curl
 Requires:	curl-libs >= 7.16.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%ifarch %{ix86}
+%if "%(%{__cc} -dumpversion)" >= "6.3"
+# "-O2 -march=i686 -mtune=pentium4" combination causes sigscheme to segfault when built with gcc 6.3
+%define		filterout	-mtune=pentium4
+%endif
+%endif
 
 %description
 Uim is a multilingual input method library. Uim aims to provide secure
