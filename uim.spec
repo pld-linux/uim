@@ -15,17 +15,16 @@
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
-Version:	1.8.6
-Release:	6
+Version:	1.8.8
+Release:	1
 License:	GPL or BSD
 Group:		Libraries
 #Source0Download: https://github.com/uim/uim/releases
-Source0:	https://github.com/uim/uim/releases/download/%{name}-%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	ecea4c597bab1fd4ba98ea84edcece59
+Source0:	https://github.com/uim/uim/releases/download/1.8.8/%{name}-%{version}.tar.bz2
+# Source0-md5:	01c7bd5d0d4f3a9f6f5befe6f57a470b
 Source1:	%{name}.xinputd
 Source2:	%{name}-init.el
 Patch0:		%{name}-emacs-utf8.patch
-Patch1:		%{name}-gtk+gnome-git.patch
 URL:		https://github.com/uim/uim/wiki
 %{?with_canna:BuildRequires:	Canna-devel}
 %{?with_wnn:BuildRequires:	FreeWnn-devel}
@@ -429,7 +428,6 @@ japońskich.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 cp -a fep/README fep/README.fep
 cp -a fep/README.ja fep/README.fep.ja
@@ -509,7 +507,7 @@ ln -sf %{_localstatedir}/lib/uim/installed-modules.scm $RPM_BUILD_ROOT%{_datadir
 ln -sf %{_localstatedir}/lib/uim/loader.scm $RPM_BUILD_ROOT%{_datadir}/uim/
 
 %if %{without scim}
-%{__rm} $RPM_BUILD_ROOT%{_datadir}/uim/{scim.scm,pixmaps/scim.svg}
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/uim/pixmaps/scim.svg
 %endif
 
 # OSX-specific
@@ -645,7 +643,7 @@ fi
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README
+%doc AUTHORS NEWS README RELNOTE
 %doc fep/README.fep fep/README.fep.ja fep/README.fep.key xim/README.xim
 %{_sysconfdir}/X11/xinit/xinput.d/uim.conf
 %attr(755,root,root) %{_bindir}/uim-fep
@@ -660,7 +658,7 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libuim-custom.so.2
 %attr(755,root,root) %{_libdir}/libuim-scm.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libuim-scm.so.0
-%attr(755,root,root) %{_libdir}/uim-helper-server
+%attr(755,root,root) %{_libexecdir}/uim-helper-server
 %dir %{_libdir}/uim
 %dir %{_libdir}/uim/notify
 %attr(755,root,root) %{_libdir}/uim/notify/libuimnotify-libnotify.so
@@ -673,10 +671,10 @@ fi
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-fileio.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-lolevel.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-look.so
-%attr(755,root,root) %{_libdir}/uim/plugin/libuim-openssl.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-process.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-socket.so
 %attr(755,root,root) %{_libdir}/uim/plugin/libuim-sqlite3.so
+%attr(755,root,root) %{_libdir}/uim/plugin/libuim-xkb.so
 %dir %{_datadir}/uim
 %{_datadir}/uim/byeoru-data
 %{_datadir}/uim/helperdata
@@ -737,9 +735,9 @@ fi
 %attr(755,root,root) %{_bindir}/uim-toolbar-gtk
 %attr(755,root,root) %{_bindir}/uim-toolbar-gtk-systray
 %attr(755,root,root) %{_libdir}/gtk-2.0/*/immodules/im-uim.so
-%attr(755,root,root) %{_libdir}/uim-candwin-gtk
-%attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk
-%attr(755,root,root) %{_libdir}/uim-candwin-horizontal-gtk
+%attr(755,root,root) %{_libexecdir}/uim-candwin-gtk
+%attr(755,root,root) %{_libexecdir}/uim-candwin-tbl-gtk
+%attr(755,root,root) %{_libexecdir}/uim-candwin-horizontal-gtk
 
 %files gtk3
 %defattr(644,root,root,755)
@@ -750,9 +748,9 @@ fi
 %attr(755,root,root) %{_bindir}/uim-toolbar-gtk3
 %attr(755,root,root) %{_bindir}/uim-toolbar-gtk3-systray
 %attr(755,root,root) %{_libdir}/gtk-3.0/*/immodules/im-uim.so
-%attr(755,root,root) %{_libdir}/uim-candwin-gtk3
-%attr(755,root,root) %{_libdir}/uim-candwin-tbl-gtk3
-%attr(755,root,root) %{_libdir}/uim-candwin-horizontal-gtk3
+%attr(755,root,root) %{_libexecdir}/uim-candwin-gtk3
+%attr(755,root,root) %{_libexecdir}/uim-candwin-tbl-gtk3
+%attr(755,root,root) %{_libexecdir}/uim-candwin-horizontal-gtk3
 %dir %{_datadir}/uim/ui
 %{_datadir}/uim/ui/uim-applet-menu.xml
 
@@ -770,7 +768,7 @@ fi
 %attr(755,root,root) %{_bindir}/uim-im-switcher-qt
 %attr(755,root,root) %{_bindir}/uim-pref-qt
 %attr(755,root,root) %{_bindir}/uim-toolbar-qt
-%attr(755,root,root) %{_libdir}/uim-candwin-qt
+%attr(755,root,root) %{_libexecdir}/uim-candwin-qt
 %attr(755,root,root) %{_libdir}/qt/plugins-mt/inputmethods/libquiminputcontextplugin.so
 %endif
 
@@ -782,7 +780,7 @@ fi
 %attr(755,root,root) %{_bindir}/uim-pref-qt4
 %attr(755,root,root) %{_bindir}/uim-toolbar-qt4
 %attr(755,root,root) %{_libdir}/qt4/plugins/inputmethods/libuiminputcontextplugin.so
-%attr(755,root,root) %{_libdir}/uim-candwin-qt4
+%attr(755,root,root) %{_libexecdir}/uim-candwin-qt4
 %endif
 
 %if %{with kde}
@@ -794,8 +792,6 @@ fi
 
 %files -n emacs-common-uim
 %defattr(644,root,root,755)
-%doc emacs/README
-%lang(ja) %doc emacs/README.ja
 %attr(755,root,root) %{_bindir}/uim-el-agent
 %attr(755,root,root) %{_bindir}/uim-el-helper-agent
 
