@@ -1,0 +1,216 @@
+--- uim-1.8.8/configure.ac.orig	2020-10-17 09:24:42.226622532 +0200
++++ uim-1.8.8/configure.ac	2020-10-17 11:11:05.698706962 +0200
+@@ -856,7 +856,7 @@
+   [enable_gnome3_applet=yes])
+ 
+ if test "x$enable_gnome3_applet" != xno; then
+-  PKG_CHECK_MODULES(GNOME3_APPLET, libpanel-applet,
++  PKG_CHECK_MODULES(GNOME3_APPLET, libgnome-panel,
+                     enable_gnome3_applet=yes, enable_gnome3_applet=no)
+ fi
+ 
+@@ -865,7 +865,7 @@
+ if test "x$enable_gnome3_applet" = xyes; then
+   AC_ARG_WITH([libpanel-applet-dir], [], [LIBPANEL_APPLET_DIR=$withval], [LIBPANEL_APPLET_DIR=""])
+   if test "$LIBPANEL_APPLET_DIR" == ""; then
+-    LIBPANEL_APPLET_DIR=`$PKG_CONFIG --variable=libpanel_applet_dir libpanel-applet`
++    LIBPANEL_APPLET_DIR=`$PKG_CONFIG --variable=modulesdir libgnome-panel`
+   fi
+   AC_SUBST(LIBPANEL_APPLET_DIR)
+ fi
+--- uim-1.8.8/gtk3/toolbar/applet-gnome3.c.orig	2017-08-14 02:07:26.000000000 +0200
++++ uim-1.8.8/gtk3/toolbar/applet-gnome3.c	2020-10-18 09:54:01.329023695 +0200
+@@ -38,11 +38,23 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <locale.h>
+-#include <panel-applet.h>
++#include <libgnome-panel/gp-applet.h>
++#include <libgnome-panel/gp-module.h>
+ #include <uim/uim.h>
+ #include <uim/gettext.h>
+ 
+-PanelApplet *uimapplet;
++G_BEGIN_DECLS
++#define UIM_TYPE_APPLET uim_applet_get_type()
++G_DECLARE_FINAL_TYPE (UimApplet, uim_applet, UIM, APPLET, GpApplet)
++G_END_DECLS
++
++struct _UimApplet
++{
++  GpApplet parent;
++  GtkWidget *toolbar;
++};
++
++G_DEFINE_TYPE (UimApplet, uim_applet, GP_TYPE_APPLET)
+ 
+ static void exec_switcher(GSimpleAction *action, GVariant *parameter, gpointer data);
+ static void exec_pref(GSimpleAction *action, GVariant *parameter, gpointer data);
+@@ -62,7 +74,8 @@
+   { "pad", exec_pad },
+   { "hand", exec_hand },
+   { "help", exec_help },
+-  { "about", display_about_dialog }
++  { "about", display_about_dialog },
++  { NULL }
+ };
+ 
+ static void
+@@ -128,47 +141,60 @@
+   }
+ }
+ 
+-static gboolean
+-uim_applet_new(PanelApplet *applet, const gchar *iid, gpointer data)
++static void
++uim_applet_init(UimApplet *uim_applet)
+ {
+-  GtkWidget *toolbar;
+-  GSimpleActionGroup *action_group;
+   gchar *ui_path;
+-  
+-  uimapplet = applet;
+-
+-  if (strcmp(iid, "UimApplet") != 0)
+-    return FALSE;
+-
+-  uim_init();
+-
+-  toolbar = (GtkWidget*)uim_toolbar_applet_new();
+ 
+-  gtk_container_add(GTK_CONTAINER(applet), toolbar);
++  uim_applet->toolbar = (GtkWidget*)uim_toolbar_applet_new();
+ 
+-  gtk_widget_show_all(GTK_WIDGET(applet));
++  gtk_container_add(GTK_CONTAINER(uim_applet), uim_applet->toolbar);
+ 
+-  action_group = g_simple_action_group_new();
+-  g_action_map_add_action_entries(G_ACTION_MAP (action_group), uim_menu_actions,
+-      G_N_ELEMENTS(uim_menu_actions), toolbar);
++  gtk_widget_show_all(GTK_WIDGET(uim_applet->toolbar));
+ 
+   ui_path = g_build_filename (UIM_UIDATADIR, "uim-applet-menu.xml", NULL);
+-  panel_applet_setup_menu_from_file(applet, ui_path, action_group, GETTEXT_PACKAGE);
++  gp_applet_setup_menu_from_resource(GP_APPLET(uim_applet), ui_path, uim_menu_actions);
+   g_free(ui_path);
++}
+ 
+-  gtk_widget_insert_action_group (GTK_WIDGET (applet), "uim",
+-                                  G_ACTION_GROUP (action_group));
+-#if LIBPANEL_APPLET_HAVE_SET_BACKGROUND_WIDGET
+-  panel_applet_set_background_widget(applet, GTK_WIDGET(applet));
+-#endif
+-  g_object_unref(action_group);
+-
+-  return TRUE;
++static void
++uim_applet_class_init(UimAppletClass *uim_applet_class)
++{
+ }
+ 
++static GpAppletInfo *
++uim_get_applet_info (const gchar *id)
++{
++  const gchar *name;
++  const gchar *description;
++  const gchar *icon;
++  GpAppletInfo *info;
+ 
++  name = _("Input Method Indicator");
++  description = _("Indicates and controls the state of input method (for uim)");
++  icon = UIM_PIXMAPSDIR "/uim-icon.png";
++  info = gp_applet_info_new (uim_applet_get_type, name, description, icon);
++  return info;
++}
+ 
+-PANEL_APPLET_IN_PROCESS_FACTORY("UimAppletFactory",
+-                            PANEL_TYPE_APPLET,
+-                            (PanelAppletFactoryCallback)uim_applet_new,
+-                            NULL)
++static const char *
++uim_get_applet_id_from_iid (const gchar *iid)
++{
++  if (g_strcmp0 (iid, "UimApplet") == 0)
++    return "uim";
++  return NULL;
++}
++
++void gp_module_load (GpModule *module)
++{
++  uim_init();
++  bindtextdomain(PACKAGE, LOCALEDIR);
++  bind_textdomain_codeset(PACKAGE, "UTF-8");
++  gp_module_set_gettext_domain(module, GETTEXT_PACKAGE);
++  gp_module_set_abi_version (module, GP_MODULE_ABI_VERSION);
++  gp_module_set_id (module, "uim");
++  gp_module_set_version (module, PACKAGE_VERSION);
++  gp_module_set_applet_ids (module, "uim", NULL);
++  gp_module_set_get_applet_info (module, uim_get_applet_info);
++  gp_module_set_compatibility (module, uim_get_applet_id_from_iid);
++}
+--- uim-1.8.8/gtk3/toolbar/uim-applet-menu.xml.orig	2015-06-09 12:13:54.000000000 +0200
++++ uim-1.8.8/gtk3/toolbar/uim-applet-menu.xml	2020-10-18 09:55:08.851991225 +0200
+@@ -1,3 +1,5 @@
++<interface>
++<menu id="uim-menu">
+ <section>
+   <item>
+     <attribute name="label" translatable="yes">Switch input method</attribute>
+@@ -28,3 +30,5 @@
+     <attribute name="action">uim.about</attribute>
+   </item>
+ </section>
++</menu>
++</interface>
+--- uim-1.8.8/gtk3/toolbar/Makefile.am.orig	2017-08-14 02:07:26.000000000 +0200
++++ uim-1.8.8/gtk3/toolbar/Makefile.am	2020-10-18 10:12:34.632992411 +0200
+@@ -4,42 +4,27 @@
+ if GNOME3_APPLET
+ helper_defs = -DUIM_DATADIR=\""$(datadir)/@PACKAGE@"\"
+ 
+-uim_toolbar_applet_gnome3_libdir = $(pkglibdir)
+-uim_toolbar_applet_gnome3_lib_LTLIBRARIES = libuim-toolbar-applet-gnome3.la
++uim_toolbar_applet_gnome3_libdir = $(LIBPANEL_APPLET_DIR)
++uim_toolbar_applet_gnome3_lib_LTLIBRARIES = uim.la
+ 
+ xmluidir = $(pkgdatadir)/ui
+ xmlui_DATA = uim-applet-menu.xml
+ 
+-libuim_toolbar_applet_gnome3_la_LIBADD = @GTK3_LIBS@ @GNOME3_APPLET_LIBS@ \
++uim_la_LIBADD = @GTK3_LIBS@ @GNOME3_APPLET_LIBS@ \
+ 			   $(top_builddir)/uim/libuim-scm.la \
+ 			   $(top_builddir)/uim/libuim.la \
+ 			   $(top_builddir)/uim/libuim-custom.la
+-libuim_toolbar_applet_gnome3_la_CPPFLAGS = \
++uim_la_CPPFLAGS = \
+ 			   -DUIM_UIDATADIR="\"${xmluidir}\"" \
+ 			   $(helper_defs) -I$(top_srcdir) -I$(top_builddir)
+-libuim_toolbar_applet_gnome3_la_LDFLAGS = \
++uim_la_LDFLAGS = \
+ 			   -module -avoid-version
+ 
+-libuim_toolbar_applet_gnome3_la_CFLAGS = @GTK3_CFLAGS@ @GNOME3_APPLET_CFLAGS@
++uim_la_CFLAGS = @GTK3_CFLAGS@ @GNOME3_APPLET_CFLAGS@
+ 
+-libuim_toolbar_applet_gnome3_la_SOURCES = applet-gnome3.c \
++uim_la_SOURCES = applet-gnome3.c \
+ 			       ../../gtk2/toolbar/common-gtk.c
+ 
+-APPLET_LOCATION = $(pkglibdir)/libuim-toolbar-applet-gnome3.so
+-
+-appletdir = $(LIBPANEL_APPLET_DIR)
+-applet_DATA = UimApplet.panel-applet
+-applet_in_files = $(applet_DATA:=.in)
+-applet_in_in_files = $(applet_in_files:=.in)
+-
+-$(applet_in_files): $(applet_in_in_files) Makefile
+-	$(SED) s,@APPLET_LOCATION@,$(APPLET_LOCATION),g <$< >$@.tmp
+-	$(SED) s,@UIM_PIXMAPSDIR@,$(uim_pixmapsdir),g <$@.tmp >$@
+-
+-po_files = $(wildcard $(top_srcdir)/po/*.po)
+-$(applet_DATA): $(applet_in_files) $(INTLTOOL_MERGE) $(po_files)
+-	LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@ 
+-
+ DISTCLEANFILES = UimApplet.panel-applet.in UimApplet.panel-applet \
+ 		 UimApplet.panel-applet.in.tmp
+ endif
