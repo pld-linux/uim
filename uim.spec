@@ -9,7 +9,7 @@
 %bcond_without	canna	# Canna IM and dictionary support
 %bcond_without	eb	# EB text search support
 %bcond_without	m17n	# m17n IM support
-%bcond_without	mana	# mana IM support
+%bcond_with	mana	# mana IM support
 %bcond_without	prime	# PRIME IM support
 %bcond_without	wnn	# Wnn IM support
 #
@@ -17,7 +17,7 @@ Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
 Version:	1.8.8
-Release:	5
+Release:	6
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/uim/uim/releases
