@@ -1,7 +1,7 @@
 #
 # Conditional build:
 %bcond_without	gnome	# GNOME 3 panel applet
-%bcond_without	kde	# KDE 4 panel applet and knotify4 plugin
+%bcond_with	kde	# KDE 4 panel applet and knotify4 plugin
 %bcond_with	qt3	# Qt 3 support / immodule
 %bcond_without	qt4	# Qt 4 support / immodule
 %bcond_without	qt5	# Qt 5 support / immodule
@@ -17,7 +17,7 @@ Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
 Version:	1.8.8
-Release:	6
+Release:	7
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/uim/uim/releases
