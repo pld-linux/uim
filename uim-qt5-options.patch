@@ -1,0 +1,73 @@
+--- uim-1.8.9/configure.ac.orig	2023-01-31 07:07:28.042694371 +0100
++++ uim-1.8.9/configure.ac	2023-02-01 22:17:54.615354533 +0100
+@@ -1150,6 +1150,18 @@ AC_ARG_WITH(qt5-immodule,
+   [],
+   [with_qt5_immodule=no])
+ 
++AC_ARG_WITH(qt5-quick,
++  AC_HELP_STRING([--with-qt5-quick],
++    [build Qt5Quick plugin]),
++  [],
++  [with_qt5_quick=$with_qt5])
++
++AC_ARG_WITH(kde5,
++  AC_HELP_STRING([--with-kde5],
++    [build KDE5 plasmoid]),
++  [],
++  [with_kde5=$with_qt5])
++
+ if test "x$with_qt5" = xyes || test "x$with_qt5_immodule" = xyes; then
+   if test -z "$QMAKE5"; then
+     AC_MSG_ERROR([no qmake for Qt5 found])
+@@ -1954,12 +1966,20 @@ if test "x$with_qt5" = xyes; then
+   if test "x$with_qt5_immodule" = xyes; then
+     qt5_immodule_option="DEFINES+=QT5_IMMODULE"
+   fi
++  CMAKE_ARGS=
++  if test "x$with_qt5_quick" = xyes; then
++    CMAKE_ARGS="$CMAKE_ARGS -DWITH_QUICK=ON"
++  fi
++  if test "x$with_kde5" = xyes; then
++    CMAKE_ARGS="$CMAKE_ARGS -DWITH_KDE5=ON"
++  fi
+   set -e
+   # FIXME: move CMAKE_CXX_FLAGS into cmake_option
+   ${CMAKE} \
+     -B ${ac_abs_top_builddir}/qt5/applet.cmake \
+     -S ${ac_abs_top_srcdir}/qt5/applet \
+     -DCMAKE_CXX_FLAGS="${CXXFLAGS} ${X_CFLAGS}" \
++    $CMAKE_ARGS \
+     ${cmake_option}
+   ${QMAKE5} -o ${ac_abs_top_builddir}/qt5/candwin/Makefile.qmake \
+     ${ac_abs_top_builddir}/qt5/candwin/uim-candwin-qt5.pro
+--- uim-1.8.9/qt5/applet/CMakeLists.txt.orig	2020-03-27 23:51:26.000000000 +0100
++++ uim-1.8.9/qt5/applet/CMakeLists.txt	2023-02-01 22:18:53.598368328 +0100
+@@ -1,5 +1,9 @@
+ project(uim-applet)
+ 
++option(WITH_KDE5 "KDE5 plasmoid applet")
++option(WITH_QUICK "Qt5Quick module")
++
++if(WITH_KDE5)
+ # use Extra CMake Modules (ECM) for common functionality
+ find_package(ECM REQUIRED NO_MODULE)
+ # needed by find_package(KF5Plasma) below.
+@@ -10,5 +14,8 @@ find_package(KF5Plasma REQUIRED)
+ 
+ # Add installation target ("make install")
+ plasma_install_package(plasmoid com.github.uim.status)
++endif()
+ 
++if(WITH_QUICK)
+ add_subdirectory(qtquick-plugin)
++endif()
+--- uim-1.8.9/configure.ac.orig	2023-02-02 21:18:06.666723146 +0100
++++ uim-1.8.9/configure.ac	2023-02-02 21:31:56.125562915 +0100
+@@ -1901,6 +1901,7 @@ if test "x$CMAKE" != xno; then
+   # FIXME: move CMAKE_CXX_FLAGS into cmake_option
+   cmake_option="-DCMAKE_BUILD_TYPE=${cmake_build_type}"
+   cmake_option="${cmake_option} -DCMAKE_INSTALL_PREFIX=${prefix}"
++  cmake_option="${cmake_option} -DCMAKE_INSTALL_LIBDIR=${libdir}"
+   cmake_option="${cmake_option} -DCMAKE_SKIP_RPATH=true"
+   cmake_option="${cmake_option} -DKDE4_USE_ALWAYS_FULL_RPATH=false"
+ fi

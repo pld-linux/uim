@@ -1,10 +1,12 @@
+# TODO: package kde5 plasmoid
 #
 # Conditional build:
 %bcond_without	gnome	# GNOME 3 panel applet
-%bcond_with	kde	# KDE 4 panel applet and knotify4 plugin
+%bcond_with	kde4	# KDE 4 panel applet and knotify4 plugin
+%bcond_with	kde5	# KDE 5 plasmoid
 %bcond_with	qt3	# Qt 3 support / immodule
 %bcond_without	qt4	# Qt 4 support / immodule
-%bcond_without	qt5	# Qt 5 support / immodule
+%bcond_without	qt5	# Qt 5 support / immodule / quick plugin
 %bcond_without	anthy	# Anthy IM and dictionary support
 %bcond_without	canna	# Canna IM and dictionary support
 %bcond_without	eb	# EB text search support
@@ -16,17 +18,18 @@
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
-Version:	1.8.8
-Release:	7
+Version:	1.8.9
+Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/uim/uim/releases
 Source0:	https://github.com/uim/uim/releases/download/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	01c7bd5d0d4f3a9f6f5befe6f57a470b
+# Source0-md5:	fd4a5f60dea0596cac81956792942b9b
 Source1:	%{name}.xinputd
 Source2:	%{name}-init.el
 Patch0:		%{name}-emacs-utf8.patch
 Patch1:		%{name}-gnome-panel-update.patch
+Patch2:		%{name}-qt5-options.patch
 URL:		https://github.com/uim/uim/wiki
 %{?with_canna:BuildRequires:	Canna-devel}
 %{?with_wnn:BuildRequires:	FreeWnn-devel}
@@ -35,12 +38,16 @@ URL:		https://github.com/uim/uim/wiki
 %{?with_qt4:BuildRequires:	QtGui-devel >= 4}
 %{?with_qt5:BuildRequires:	Qt5Core-devel >= 5}
 %{?with_qt5:BuildRequires:	Qt5Gui-devel >= 5}
+%{?with_qt5:BuildRequires:	Qt5Qml-devel >= 5}
+%{?with_qt5:BuildRequires:	Qt5Quick-devel >= 5}
 %{?with_qt5:BuildRequires:	Qt5Widgets-devel >= 5}
 %{?with_anthy:BuildRequires:	anthy-devel >= 9100h-2}
 BuildRequires:	autoconf >= 2.60b
 BuildRequires:	automake >= 1:1.10
-%{?with_kde:BuildRequires:	automoc4}
-%{?with_kde:BuildRequires:	cmake}
+%{?with_kde4:BuildRequires:	automoc4}
+%if %{with kde4} || %{with qt5}
+BuildRequires:	cmake
+%endif
 BuildRequires:	curl-devel >= 7.16.4
 %{?with_eb:BuildRequires:	eb-devel}
 BuildRequires:	expat-devel >= 1.95
@@ -48,8 +55,9 @@ BuildRequires:	gettext-tools >= 0.17
 %{?with_gnome:BuildRequires:	gnome-panel-devel >= 3.37}
 BuildRequires:	gtk+2-devel >= 2:2.4.0
 BuildRequires:	gtk+3-devel >= 3.0
+%{?with_kde5:BuildRequires:	kf5-plasma-devel}
 BuildRequires:	intltool >= 0.36.3
-%{?with_kde:BuildRequires:	kde4-kdelibs-devel}
+%{?with_kde4:BuildRequires:	kde4-kdelibs-devel}
 BuildRequires:	libedit-devel
 BuildRequires:	libffi-devel >= 3.0.0
 BuildRequires:	libgcroots-devel >= 0.2.3
@@ -67,6 +75,7 @@ BuildRequires:	pkgconfig(libffi) >= 3.0.0
 %{?with_qt4:BuildRequires:	qt4-qmake >= 4}
 %{?with_qt5:BuildRequires:	qt5-qmake >= 5}
 BuildRequires:	rpmbuild(macros) >= 1.750
+BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3.0.0
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXext-devel
@@ -289,7 +298,7 @@ Requires:	emacs-common-uim = %{version}-%{release}
 %description -n emacs-uim
 This package provides Emacs support for Uim.
 
-%description -n emacs-uim
+%description -n emacs-uim -l pl.UTF-8
 Ten pakiet zapewnia obsługę Uima w Emacsie.
 
 %package -n xemacs-uim
@@ -444,11 +453,15 @@ japońskich.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 cp -a fep/README fep/README.fep
 cp -a fep/README.ja fep/README.fep.ja
 cp -a fep/README.key fep/README.fep.key
 cp -a xim/README xim/README.xim
+
+%{__sed} -i -e 's,\${QML_INSTALL_DIR}/com/github/uim,${CMAKE_INSTALL_LIBDIR}/qt5/qml/uim,' \
+	qt5/applet/qtquick-plugin/CMakeLists.txt
 
 %build
 %{__gettextize}
@@ -464,8 +477,8 @@ cp -a xim/README xim/README.xim
 	--enable-dict \
 	--disable-gnome-applet \
 	%{?with_gnome:--enable-gnome3-applet} \
-	%{?with_kde:--enable-kde4-applet} \
-	--enable-notify=libnotify%{?with_kde:,knotify4} \
+	%{?with_kde4:--enable-kde4-applet} \
+	--enable-notify=libnotify%{?with_kde4:,knotify4} \
 	--enable-openssl \
 	--enable-pref \
 	%{?with_qt4:--enable-qt4-qt3support} \
@@ -478,6 +491,7 @@ cp -a xim/README xim/README.xim
 	--with-ffi \
 	--with-gtk2 \
 	--with-gtk3 \
+	%{!?with_kde5:--without-kde5} \
 	--with-libedit \
 	--with-libgcroots=installed \
 	--with-lispdir=%{_datadir}/emacs/site-lisp \
@@ -487,7 +501,7 @@ cp -a xim/README xim/README.xim
 	%{!?with_prime:--without-prime} \
 	%{?with_qt3:--with-qt --with-qt-immodule} \
 	%{?with_qt4:--with-qt4 --with-qt4-immodule} \
-	%{?with_qt5:--with-qt5 --with-qt5-immodule} \
+	%{?with_qt5:--with-qt5 --with-qt5-immodule --with-quick} \
 	--with-sj3 \
 	--with-skk \
 	--with-sqlite3 \
@@ -794,11 +808,14 @@ fi
 %attr(755,root,root) %{_bindir}/uim-im-switcher-qt5
 %attr(755,root,root) %{_bindir}/uim-pref-qt5
 %attr(755,root,root) %{_bindir}/uim-toolbar-qt5
-%attr(755,root,root) %{_libdir}/qt5/plugins/platforminputcontexts/libuimplatforminputcontextplugin.so
 %attr(755,root,root) %{_libexecdir}/uim-candwin-qt5
+%attr(755,root,root) %{_libdir}/qt5/plugins/platforminputcontexts/libuimplatforminputcontextplugin.so
+%dir %{_libdir}/qt5/qml/uim
+%attr(755,root,root) %{_libdir}/qt5/qml/uim/libuim-qtquick-plugin.so
+%{_libdir}/qt5/qml/uim/qmldir
 %endif
 
-%if %{with kde}
+%if %{with kde4}
 %files kde
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/kde4/plasma_applet_uim.so
