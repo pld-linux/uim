@@ -1,9 +1,8 @@
-# TODO: package kde5 plasmoid
 #
 # Conditional build:
 %bcond_without	gnome	# GNOME 3 panel applet
 %bcond_with	kde4	# KDE 4 panel applet and knotify4 plugin
-%bcond_with	kde5	# KDE 5 plasmoid
+%bcond_without	kde5	# KDE 5 plasmoid
 %bcond_with	qt3	# Qt 3 support / immodule
 %bcond_without	qt4	# Qt 4 support / immodule
 %bcond_without	qt5	# Qt 5 support / immodule / quick plugin
@@ -55,9 +54,10 @@ BuildRequires:	gettext-tools >= 0.17
 %{?with_gnome:BuildRequires:	gnome-panel-devel >= 3.37}
 BuildRequires:	gtk+2-devel >= 2:2.4.0
 BuildRequires:	gtk+3-devel >= 3.0
-%{?with_kde5:BuildRequires:	kf5-plasma-devel}
 BuildRequires:	intltool >= 0.36.3
 %{?with_kde4:BuildRequires:	kde4-kdelibs-devel}
+%{?with_kde5:BuildRequires:	kf5-extra-cmake-modules}
+%{?with_kde5:BuildRequires:	kf5-plasma-framework-devel}
 BuildRequires:	libedit-devel
 BuildRequires:	libffi-devel >= 3.0.0
 BuildRequires:	libgcroots-devel >= 0.2.3
@@ -275,6 +275,26 @@ projektu jest udostępnienie bezpiecznych i użytecznych metod
 wprowadzania dla wszystkich języków.
 
 Ten pakiet zawiera aplet KDE 4.
+
+%package kde5
+Summary:	KDE 5 Plasmoid for Uim
+Summary(pl.UTF-8):	Plazmoid KDE 5 dla biblioteki Uim
+Group:		X11/Applications
+Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-qt5 = %{version}-%{release}
+
+%description kde5
+Uim is a multilingual input method library. Uim aims to provide secure
+and useful input methods for all languages.
+
+This package provides the KDE 5 plasmoid.
+
+%description kde5 -l pl.UTF-8
+Uim jest biblioteką obsługującą wejście w wielu językach. Celem
+projektu jest udostępnienie bezpiecznych i użytecznych metod
+wprowadzania dla wszystkich języków.
+
+Ten pakiet zawiera plazmoid KDE 5.
 
 %package -n emacs-common-uim
 Summary:	Common package for Emacsen support for Uim
@@ -821,6 +841,14 @@ fi
 %attr(755,root,root) %{_libdir}/kde4/plasma_applet_uim.so
 %attr(755,root,root) %{_libdir}/uim/notify/libuimnotify-knotify4.so
 %{_datadir}/kde4/services/plasma-applet-uim.desktop
+%endif
+
+%if %{with kde5}
+%files kde5
+%defattr(644,root,root,755)
+%{_datadir}/kservices5/plasma-applet-com.github.uim.status.desktop
+%{_datadir}/metainfo/com.github.uim.status.appdata.xml
+%{_datadir}/plasma/plasmoids/com.github.uim.status
 %endif
 
 %files -n emacs-common-uim
