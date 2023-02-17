@@ -86,6 +86,10 @@ Requires:	curl-libs >= 7.16.4
 Obsoletes:	uim-scim < 1.8
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+# avoids sigscheme SIGSEGV during install (when using gcc 12.2)
+# (hard to track if it's sigscheme or gcc bug; sigscheme gc seems incompatible with asan)
+%define		specflags_x32	-fno-optimize-sibling-calls
+
 %ifarch %{ix86}
 %if "%{_ver_ge '%{cc_version}' '6.3'}" == "1"
 # "-O2 -march=i686 -mtune=pentium4" combination causes sigscheme to segfault when built with gcc 6.3-7.5
