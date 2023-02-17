@@ -40,6 +40,7 @@ URL:		https://github.com/uim/uim/wiki
 %{?with_qt5:BuildRequires:	Qt5Qml-devel >= 5}
 %{?with_qt5:BuildRequires:	Qt5Quick-devel >= 5}
 %{?with_qt5:BuildRequires:	Qt5Widgets-devel >= 5}
+%{?with_kde5:BuildRequires:	Qt5X11Extras-devel >= 5}
 %{?with_anthy:BuildRequires:	anthy-devel >= 9100h-2}
 BuildRequires:	autoconf >= 2.60b
 BuildRequires:	automake >= 1:1.10
