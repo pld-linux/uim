@@ -4,7 +4,7 @@
 %bcond_with	kde4	# KDE 4 panel applet and knotify4 plugin
 %bcond_without	kde5	# KDE 5 plasmoid
 %bcond_with	qt3	# Qt 3 support / immodule
-%bcond_without	qt4	# Qt 4 support / immodule
+%bcond_with	qt4	# Qt 4 support / immodule
 %bcond_without	qt5	# Qt 5 support / immodule / quick plugin
 %bcond_without	anthy	# Anthy IM and dictionary support
 %bcond_without	canna	# Canna IM and dictionary support
@@ -18,7 +18,7 @@ Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
 Version:	1.8.9
-Release:	2
+Release:	3
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/uim/uim/releases
