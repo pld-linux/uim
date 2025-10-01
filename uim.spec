@@ -5,30 +5,32 @@
 %bcond_without	kde5	# KDE 5 plasmoid
 %bcond_with	qt3	# Qt 3 support / immodule
 %bcond_with	qt4	# Qt 4 support / immodule
-%bcond_without	qt5	# Qt 5 support / immodule / quick plugin
+%bcond_without	qt5	# Qt 5 support / immodule
+%bcond_without	qt6	# Qt 5 support / immodule
 %bcond_without	anthy	# Anthy IM and dictionary support
 %bcond_without	canna	# Canna IM and dictionary support
 %bcond_without	eb	# EB text search support
 %bcond_without	m17n	# m17n IM support
 %bcond_with	mana	# mana IM support
 %bcond_without	prime	# PRIME IM support
-%bcond_without	wnn	# Wnn IM support
+%bcond_with	wnn	# Wnn IM support
 #
 Summary:	Multilingual input method library
 Summary(pl.UTF-8):	Biblioteka obsługująca wejście w wielu językach
 Name:		uim
-Version:	1.8.9
-Release:	3
+Version:	1.9.6
+Release:	1
 License:	BSD
 Group:		Libraries
 #Source0Download: https://github.com/uim/uim/releases
 Source0:	https://github.com/uim/uim/releases/download/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	fd4a5f60dea0596cac81956792942b9b
+# Source0-md5:	80fe78318b4e9e593ad5f52b3d03e1b4
 Source1:	%{name}.xinputd
 Source2:	%{name}-init.el
 Patch0:		%{name}-emacs-utf8.patch
 Patch1:		%{name}-gnome-panel-update.patch
 Patch2:		%{name}-qt5-options.patch
+Patch3:		build.patch
 URL:		https://github.com/uim/uim/wiki
 %{?with_canna:BuildRequires:	Canna-devel}
 %{?with_wnn:BuildRequires:	FreeWnn-devel}
@@ -40,12 +42,16 @@ URL:		https://github.com/uim/uim/wiki
 %{?with_qt5:BuildRequires:	Qt5Qml-devel >= 5}
 %{?with_qt5:BuildRequires:	Qt5Quick-devel >= 5}
 %{?with_qt5:BuildRequires:	Qt5Widgets-devel >= 5}
-%{?with_kde5:BuildRequires:	Qt5X11Extras-devel >= 5}
+%{?with_qt6:BuildRequires:	Qt6Core-devel}
+%{?with_qt6:BuildRequires:	Qt6Gui-devel}
+%{?with_qt6:BuildRequires:	Qt6Qml-devel}
+%{?with_qt6:BuildRequires:	Qt6Quick-devel}
+%{?with_qt6:BuildRequires:	Qt6Widgets-devel}
 %{?with_anthy:BuildRequires:	anthy-devel >= 9100h-2}
 BuildRequires:	autoconf >= 2.60b
 BuildRequires:	automake >= 1:1.10
 %{?with_kde4:BuildRequires:	automoc4}
-%if %{with kde4} || %{with qt5}
+%if %{with kde4} || %{with qt5} || %{with qt6}
 BuildRequires:	cmake
 %endif
 BuildRequires:	curl-devel >= 7.16.4
@@ -260,6 +266,25 @@ projektu jest udostępnienie bezpiecznych i użytecznych metod
 wprowadzania dla wszystkich języków.
 
 Ten pakiet zawiera moduł IM Qt 5 oraz programy pomocnicze.
+
+%package qt6
+Summary:	Qt 6 support for Uim
+Summary(pl.UTF-8):	Obsługa Qt 6 dla biblioteki Uim
+Group:		X11/Applications
+Requires:	%{name} = %{version}-%{release}
+
+%description qt6
+Uim is a multilingual input method library. Uim aims to provide secure
+and useful input methods for all languages.
+
+This package provides the Qt 6 IM module and helper programs.
+
+%description qt6 -l pl.UTF-8
+Uim jest biblioteką obsługującą wejście w wielu językach. Celem
+projektu jest udostępnienie bezpiecznych i użytecznych metod
+wprowadzania dla wszystkich języków.
+
+Ten pakiet zawiera moduł IM Qt 6 oraz programy pomocnicze.
 
 %package kde
 Summary:	KDE 4 Applet for Uim
@@ -479,6 +504,7 @@ japońskich.
 %patch -P0 -p1
 %patch -P1 -p1
 %patch -P2 -p1
+%patch -P3 -p1
 
 cp -a fep/README fep/README.fep
 cp -a fep/README.ja fep/README.fep.ja
@@ -501,41 +527,48 @@ cp -a xim/README xim/README.xim
 	--enable-default-toolkit=gtk3 \
 	--enable-dict \
 	--disable-gnome-applet \
-	%{?with_gnome:--enable-gnome3-applet} \
-	%{?with_kde4:--enable-kde4-applet} \
+	%{__enable_disable gnome gnome3-applet} \
+	%{__enable_disable kde4 kde4-applet} \
 	--enable-notify=libnotify%{?with_kde4:,knotify4} \
-	--enable-openssl \
+	--disable-openssl \
+	--without-openssl-header-check \
 	--enable-pref \
-	%{?with_qt4:--enable-qt4-qt3support} \
 	--without-anthy \
-	%{?with_anthy:--with-anthy-utf8} \
-	%{?with_canna:--with-canna} \
+	%{__with_without anthy anthy-utf8} \
+	%{__with_without canna} \
 	--with-curl \
-	%{?with_eb:--with-eb} \
+	%{__with_without eb} \
 	--with-expat \
 	--with-ffi \
 	--with-gtk2 \
 	--with-gtk3 \
-	%{!?with_kde5:--without-kde5} \
+	%{__with_without kde5} \
 	--with-libedit \
 	--with-libgcroots=installed \
 	--with-lispdir=%{_datadir}/emacs/site-lisp \
-	%{!?with_m17n:--without-m17nlib} \
-	%{!?with_mana:--without-mana} \
-	--without-openssl-header-check \
-	%{!?with_prime:--without-prime} \
-	%{?with_qt3:--with-qt --with-qt-immodule} \
-	%{?with_qt4:--with-qt4 --with-qt4-immodule} \
-	%{?with_qt5:--with-qt5 --with-qt5-immodule --with-quick} \
+	%{__with_without m17n m17nlib} \
+	%{__with_without mana} \
+	%{__with_without prime} \
+	%{__with_without qt} \
+	%{__with_without qt qt-immodule} \
+	%{__with_without qt4} \
+	%{__with_without qt4 qt4-immodule} \
+	%{__enable_disable qt4 qt4-qt3support} \
+	%{__with_without qt5} \
+	%{__with_without qt5 qt5-immodule} \
+	%{__with_without qt6} \
+	%{__with_without qt6 qt6-immodule} \
+	--without-scim \
 	--with-sj3 \
 	--with-skk \
 	--with-sqlite3 \
 	--with-ssl-engine \
-	%{?with_wnn:--with-wnn --with-wnn-includes=/usr/include/wnn} \
+	%{__with_without wnn} \
+	%{?with_wnn:--with-wnn-includes=/usr/include/wnn} \
 	--with-x \
 	--with-xft
 
-%{__make} -j1
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -840,6 +873,17 @@ fi
 %{_libdir}/qt5/qml/uim/qmldir
 %endif
 
+%if %{with qt6}
+%files qt6
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/uim-chardict-qt6
+%attr(755,root,root) %{_bindir}/uim-im-switcher-qt6
+%attr(755,root,root) %{_bindir}/uim-pref-qt6
+%attr(755,root,root) %{_bindir}/uim-toolbar-qt6
+%attr(755,root,root) %{_libexecdir}/uim-candwin-qt6
+%attr(755,root,root) %{_libdir}/qt6/plugins/platforminputcontexts/libuimplatforminputcontextplugin.so
+%endif
+
 %if %{with kde4}
 %files kde
 %defattr(644,root,root,755)
@@ -851,7 +895,6 @@ fi
 %if %{with kde5}
 %files kde5
 %defattr(644,root,root,755)
-%{_datadir}/kservices5/plasma-applet-com.github.uim.status.desktop
 %{_datadir}/metainfo/com.github.uim.status.appdata.xml
 %{_datadir}/plasma/plasmoids/com.github.uim.status
 %endif

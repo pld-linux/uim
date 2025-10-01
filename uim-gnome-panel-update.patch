@@ -164,7 +164,7 @@
 +</interface>
 --- uim-1.8.9/gtk3/toolbar/Makefile.am.orig	2023-01-31 07:05:10.013442140 +0100
 +++ uim-1.8.9/gtk3/toolbar/Makefile.am	2023-01-31 17:07:05.979481235 +0100
-@@ -4,46 +4,27 @@ EXTRA_DIST = UimApplet.panel-applet.in.i
+@@ -4,45 +4,26 @@ EXTRA_DIST = UimApplet.panel-applet.in.i
  if GNOME3_APPLET
  helper_defs = -DUIM_DATADIR=\""$(datadir)/@PACKAGE@"\"
  
@@ -184,7 +184,7 @@
 -libuim_toolbar_applet_gnome3_la_CPPFLAGS = \
 +uim_la_CPPFLAGS = \
  			   -DUIM_UIDATADIR="\"${xmluidir}\"" \
- 			   $(helper_defs) -I$(top_srcdir) -I$(top_builddir)
+ 			   $(helper_defs) $(AM_CPPFLAGS)
 -libuim_toolbar_applet_gnome3_la_LDFLAGS = \
 +uim_la_LDFLAGS = \
  			   -module -avoid-version
@@ -192,9 +192,8 @@
 -libuim_toolbar_applet_gnome3_la_CFLAGS = @GTK3_CFLAGS@ @GNOME3_APPLET_CFLAGS@
 +uim_la_CFLAGS = @GTK3_CFLAGS@ @GNOME3_APPLET_CFLAGS@
  
--libuim_toolbar_applet_gnome3_la_SOURCES = applet-gnome3.c \
-+uim_la_SOURCES = applet-gnome3.c \
- 			       ../../gtk2/toolbar/common-gtk.c
+-libuim_toolbar_applet_gnome3_la_SOURCES = applet-gnome3.c common-gtk.c
++uim_la_SOURCES = applet-gnome3.c common-gtk.c
  
 -APPLET_LOCATION = $(pkglibdir)/libuim-toolbar-applet-gnome3.so
 -

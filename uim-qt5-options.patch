@@ -42,7 +42,8 @@
      ${ac_abs_top_builddir}/qt5/candwin/uim-candwin-qt5.pro
 --- uim-1.8.9/qt5/applet/CMakeLists.txt.orig	2020-03-27 23:51:26.000000000 +0100
 +++ uim-1.8.9/qt5/applet/CMakeLists.txt	2023-02-01 22:18:53.598368328 +0100
-@@ -1,5 +1,9 @@
+@@ -1,6 +1,10 @@
+ 
  project(uim-applet)
  
 +option(WITH_KDE5 "KDE5 plasmoid applet")

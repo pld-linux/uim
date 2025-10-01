@@ -1,0 +1,10 @@
+--- uim-1.9.6/notify/Makefile.am~	2025-05-16 15:45:08.000000000 +0200
++++ uim-1.9.6/notify/Makefile.am	2025-10-02 00:16:53.989999497 +0200
+@@ -5,6 +5,7 @@
+ 
+ if LIBNOTIFY
+ # XXX
++AM_CPPFLAGS = -I$(top_srcdir)/replace -I$(top_srcdir)
+ CFLAGS+= -Wno-error
+ uimnotify_plugin_LTLIBRARIES += libuimnotify-libnotify.la
+ libuimnotify_libnotify_la_SOURCES = uim-libnotify.c
