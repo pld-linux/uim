@@ -42,6 +42,7 @@ URL:		https://github.com/uim/uim/wiki
 %{?with_qt5:BuildRequires:	Qt5Qml-devel >= 5}
 %{?with_qt5:BuildRequires:	Qt5Quick-devel >= 5}
 %{?with_qt5:BuildRequires:	Qt5Widgets-devel >= 5}
+%{?with_qt5:BuildRequires:	Qt5X11Extras-devel}
 %{?with_qt6:BuildRequires:	Qt6Core-devel}
 %{?with_qt6:BuildRequires:	Qt6Gui-devel}
 %{?with_qt6:BuildRequires:	Qt6Qml-devel}
